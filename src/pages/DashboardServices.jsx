@@ -7,21 +7,40 @@ import { useState } from 'react'
 import TextField from '@mui/material/TextField'
 import { handleAdd, handleChange, handleCloseEditDetails, handleEditDetails } from '../helpers/formHelper';
 import ModalBackground from "../components/ModalBackground"
+import { useAddServicesMutation, useDeleteServicesMutation, useUpdateServicesMutation } from '../redux/slices/servicesApi'
 
 const DashboardServices = ({ role }) => {
     const [modalStatus, setModalStatus] = useState(false);
     const [modalType, setModalType] = useState("");
 
+    // const [addServicesDataApi] = useAddServicesMutation();
+    // const [editServicesDataApi] = useUpdateServicesMutation();
+    // const [deleteServicesDataApi] = useDeleteServicesMutation();
+
     const [serviceDetails, setServiceDetails] = useState({
+        // add id later in this and all similar for updating using id in backend
         name: "",
         icon: "",
         description: "",
         price: ""
     });
-    const handleSaveService = () => {
+    const handleSaveService = async () => {
         /* api call */
+        /* let result;
+        if (modalType === "Edit") {
+            result = await editServicesDataApi(serviceDetails);
+        } else if (modalType === "Add") {
+            result = await addServicesDataApi(serviceDetails);
+        } */
+
         handleCloseEditDetails(serviceDetails, setServiceDetails, setModalStatus, setModalType);
     };
+
+    const handleServicesDelete = async () => {
+        /* api call */
+        // const result = await deleteServicesDataApi();
+    };
+
     return (
         <section className='mt-10' id='CustomerVehicle'>
             <div className='flex justify-between items-center'>
@@ -49,7 +68,7 @@ const DashboardServices = ({ role }) => {
                                 <td className='p-4'>{service.name}</td>
                                 <td className='p-4 hidden md:block'>{service.description}</td>
                                 <td className='p-4 text-center text-red-600'>${service.price}</td>
-                                {(role === "manager") && <td className='p-4'><button className='cursor-pointer' onClick={() => handleEditDetails(service, serviceDetails, setServiceDetails, setModalStatus, setModalType)}><SquarePen size={15} className='text-blue-700 me-1' /></button><button className='cursor-pointer'><Trash size={15} className='text-red-600' /></button></td>}
+                                {(role === "manager") && <td className='p-4'><button className='cursor-pointer' onClick={() => handleEditDetails(service, serviceDetails, setServiceDetails, setModalStatus, setModalType)}><SquarePen size={15} className='text-blue-700 me-1' /></button><button className='cursor-pointer' onClick={handleServicesDelete}><Trash size={15} className='text-red-600' /></button></td>}
                             </tr>
                         })
                     }

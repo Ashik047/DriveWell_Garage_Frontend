@@ -7,10 +7,19 @@ import { useState } from 'react'
 import TextField from '@mui/material/TextField'
 import { handleAdd, handleChange, handleCloseEditDetails, handleEditDetails } from '../helpers/formHelper';
 import ModalBackground from '../components/ModalBackground'
+import { useEffect } from 'react'
+import { getUsersApi, updateUsersApi } from '../api/userApi'
 
 const CustomerVehicle = ({ role }) => {
     const [modalStatus, setModalStatus] = useState(false);
     const [modalType, setModalType] = useState("");
+
+    /*     const [userCars, setUserCars] = useState({
+            customer: "",
+            car: "",
+            plate: "",
+            year: ""
+        }); */
 
     const [vehicleDetails, setVehicleDetails] = useState({
         customer: "",
@@ -19,11 +28,28 @@ const CustomerVehicle = ({ role }) => {
         year: ""
     });
 
-    const handleSaveVehicle = () => {
+    /*  useEffect(() => {
+         (async function () {
+             const apiData = await getUsersApi();
+             setUserCars(apiData.data.vehicles);
+         })();
+     }, []); */
+
+
+    const handleSaveVehicle = async () => {
         /* api call */
+        // logic here
+        // const result = await updateUsersApi(feedbackDetails); // only updating the vehicle key of the users object
 
         handleCloseEditDetails(vehicleDetails, setVehicleDetails, setModalStatus, setModalType);
     };
+
+    const handleVehicleDelete = async () => {
+        /* api call */
+        // logic here
+        // const result = await updateUsersApi(feedbackDetails); // only updating the vehicle key of the users object
+
+    }
 
     return (
         <section className='mt-10' id='CustomerVehicle'>
@@ -52,7 +78,7 @@ const CustomerVehicle = ({ role }) => {
                                 {(role !== "customer") && <td className='p-4'>{car.customer}</td>}
                                 <td className='p-4'>{car.year}</td>
                                 <td className='p-4 hidden md:block'>{car.plate}</td>
-                                {(role === "customer" /* || role === "manager" */) && <td className='p-4'><button className='cursor-pointer' onClick={() => handleEditDetails(car, vehicleDetails, setVehicleDetails, setModalStatus, setModalType)}><SquarePen size={15} className='text-blue-700 me-1' /></button><button className='cursor-pointer'><Trash size={15} className='text-red-600' /></button></td>}
+                                {(role === "customer" /* || role === "manager" */) && <td className='p-4'><button className='cursor-pointer' onClick={() => handleEditDetails(car, vehicleDetails, setVehicleDetails, setModalStatus, setModalType)}><SquarePen size={15} className='text-blue-700 me-1' /></button><button className='cursor-pointer' onClick={handleVehicleDelete}><Trash size={15} className='text-red-600' /></button></td>}
                             </tr>
                         })
                         /* :

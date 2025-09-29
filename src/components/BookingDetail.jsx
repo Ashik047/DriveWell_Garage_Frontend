@@ -16,6 +16,8 @@ import {
 import { useState } from 'react';
 import { workerNotes } from '../constants/workerNotes';
 import ModalBackground from './ModalBackground';
+import { useDeleteBookingsMutation, useUpdateBookingsMutation } from '../redux/slices/bookingsApi'
+
 
 const BookingDetail = ({ bookingDetails, role }) => {
     const [detailsStatus, setDetailsStatus] = useState(false);
@@ -23,28 +25,40 @@ const BookingDetail = ({ bookingDetails, role }) => {
     const [notesStatus, setNotesStatus] = useState(false);
     const [workingNotes, setWorkingNotes] = useState("");
     const [workingStatus, setWorkingStatus] = useState(bookingDetails.status);
-    const handleSubmitNote = () => {
+
+    /*     const [editBookingsDataApi] = useUpdateBookingsMutation();
+        const [deleteBookingsDataApi] = useDeleteBookingsMutation(); */
+
+    const handleSubmitNote = async () => {
         /* api */
+        // const result = await editBookingsDataApi({workingNotes});
+
         setWorkingNotes("");
     };
     const handleNoteClose = () => {
         setWorkingNotes("");
         setNotesStatus(false)
     };
-    const handleNoteDelete = () => {
+    const handleNoteDelete = async () => {
         /* api */
+        // const result = await editBookingsDataApi();
+
     };
     const handleCancelBookingStatus = () => {
         setWorkingStatus(bookingDetails.status);
         setUpdateStatus(false);
     };
-    const handleSaveBookingStatus = () => {
+    const handleSaveBookingStatus = async () => {
         /* api */
+        // const result = await editBookingsDataApi({workingStatus});
+
         setWorkingStatus(bookingDetails.status);    /* not needed in final code */
         setUpdateStatus(false);
     };
-    const handleBookingDelete = () => {
+    const handleBookingDelete = async () => {
         /* api */
+        // const result = await deleteBookingsDataApi();
+
     };
 
     return (

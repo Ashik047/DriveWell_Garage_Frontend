@@ -1,7 +1,11 @@
 import Service from "../components/Service"
 import { services } from "../constants/carServices"
+import { useGetServicesQuery } from "../redux/slices/servicesApi"
 
 const Services = () => {
+
+    // const { data:servicesDetails, error: servicesError, isLoading: servicesLoading } = useGetServicesQuery(); 
+
     return (
         <main className="grow px-4 py-6">
             <h2 className="mt-4 text-center font-bold text-4xl">Our Services</h2>

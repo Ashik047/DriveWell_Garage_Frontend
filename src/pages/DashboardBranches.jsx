@@ -6,6 +6,8 @@ import { useState } from 'react'
 import TextField from '@mui/material/TextField'
 import { handleAdd, handleCloseEditDetails, handleEditDetails, handleChange } from '../helpers/formHelper'
 import ModalBackground from '../components/ModalBackground'
+import { useAddBranchesMutation, useDeleteBranchesMutation, useUpdateBranchesMutation } from '../redux/slices/branchesApi'
+import { Trash } from 'lucide-react'
 
 const DashboardBranches = ({ role }) => {
     const [modalStatus, setModalStatus] = useState(false);
@@ -16,9 +18,25 @@ const DashboardBranches = ({ role }) => {
         phone: ""
     });
 
-    const handleSaveBranch = () => {
+    /*     const [addBranchesDataApi] = useAddBranchesMutation();
+        const [editBranchesDataApi] = useUpdateBranchesMutation();
+        const [deleteBranchesDataApi] = useDeleteBranchesMutation(); */
+
+    const handleSaveBranch = async () => {
         /* api call */
+        /* let result;
+        if (modalType === "Edit") {
+            result = await editBranchesDataApi(branchDetails);
+        } else if (modalType === "Add") {
+            result = await addBranchesDataApi(branchDetails);
+        } */
+
         handleCloseEditDetails(branchDetails, setBranchDetails, setModalStatus, setModalType);
+    };
+
+    const handleBranchesDelete = async () => {
+        /* api call */
+        // const result = await deleteBranchesDataApi();
     };
 
     return (
@@ -33,7 +51,10 @@ const DashboardBranches = ({ role }) => {
                 {
                     branches?.features?.map((branch) => (
                         <div key={branch.data.id} className='w-full shadow-[5px_5px_10px_1px_#cdcdcd] p-8 text-dim-black'>
-                            <h5 className='font-bold text-lg text-black mb-3'>{branch.data.name}</h5>
+                            <div className='flex justify-between'>
+                                <h5 className='font-bold text-lg text-black mb-3'>{branch.data.name}</h5>
+                                <button className='cursor-pointer' onClick={handleBranchesDelete}><Trash size={15} className='text-red-600' /></button>
+                            </div>
                             <p>{branch.data.location}</p>
                             <p>{branch.data.phone}</p>
                             <p className='mt-3'>Staff: {branch.data.staff}</p>

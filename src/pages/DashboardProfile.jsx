@@ -4,6 +4,7 @@ import { handleChange, handleReset } from '../helpers/formHelper'
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { userDetails } from '../constants/userDetails';
+import { updateUsersApi } from '../api/userApi';
 
 const DashProfile = () => {
     const [profileData, setProfileData] = useState({
@@ -31,8 +32,10 @@ const DashProfile = () => {
         dataReset();
         setEditDetailsStatus(false);
     };
-    const handleSaveEditProfile = () => {
+    const handleSaveEditProfile = async () => {
         /* api */
+        // const result = await updateUsersApi();
+
         dataReset();
         setEditDetailsStatus(false);
     };
@@ -40,8 +43,10 @@ const DashProfile = () => {
         handleReset(passwordData, setPasswordData);
         setEditPasswordStatus(false);
     };
-    const handleSaveEditPassword = () => {
+    const handleSaveEditPassword = async () => {
         /* api */
+        // const result = await updateUsersApi();
+
         handleReset(passwordData, setPasswordData);
         setEditPasswordStatus(false);
     };

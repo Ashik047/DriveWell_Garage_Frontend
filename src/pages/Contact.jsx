@@ -10,8 +10,12 @@ import { useState } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment, faEnvelope, faPhone } from "@fortawesome/free-solid-svg-icons";
 import { handleChange } from "../helpers/formHelper";
+import { useGetBranchesQuery } from "../redux/slices/branchesApi";
 
 const Contact = () => {
+
+    // const { data:branchesDetails, error: branchesError, isLoading: branchesLoading } = useGetBranchesQuery(); 
+
     const [mailContent, setMailContent] = useState({
         name: "",
         email: "",
@@ -22,10 +26,10 @@ const Contact = () => {
 
 
     return (
-        <main className="grow px-4 py-6 rounded-md">
+        <main className="grow px-4 py-6 rounded-md" id="Contact">
             <h2 className="mt-4 text-center font-bold text-4xl">Contact Us</h2>
             <p className="text-center text-lg mt-3 text-dim-black">Have questions or need assistance? Reach out to our team or visit one of our locations.</p>
-            <section>
+            <section id="branches">
                 <h3 className="mt-18 font-bold text-3xl">Our Branches</h3>
                 <ClusterMap />
             </section>

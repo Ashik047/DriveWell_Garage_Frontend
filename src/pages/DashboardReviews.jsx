@@ -9,6 +9,7 @@ import TextField from '@mui/material/TextField'
 import { handleAdd, handleChange, handleCloseEditDetails } from '../helpers/formHelper';
 import Rating from '@mui/material/Rating'
 import ModalBackground from '../components/ModalBackground'
+import { useAddReviewsMutation, useDeleteReviewsMutation, useUpdateReviewsMutation } from '../redux/slices/reviewsApi'
 
 
 
@@ -24,10 +25,31 @@ const DashReviews = ({ role }) => {
         center: ""
     });
 
+    const [addReviewsDataApi] = useAddReviewsMutation();
+    const [editReviewsDataApi] = useUpdateReviewsMutation();
+    const [deleteReviewsDataApi] = useDeleteReviewsMutation();
 
-    const handleSaveFeedback = () => {
+    const handleSaveFeedback = async () => {
         /* api call */
+
+        /* let result;
+        if (modalType === "Edit") {
+            result = await editReviewsDataApi(feedbackDetails);
+        } else if (modalType === "Add") {
+            result = await addReviewsDataApi(feedbackDetails);
+        } */
+
         handleCloseEditDetails(feedbackDetails, setFeedbackDetails, setModalStatus, setModalType);
+    };
+
+    const handleReviewsDelete = async () => {
+        /* api call */
+        // const result = await deleteReviewsDataApi();
+    };
+
+    const handleFeedbackPublishStatus = async () => {
+        /* api call */
+        // const result = await editReviewsDataApi(feedbackDetails);     //later change the endpoint and create a new one with post method
     };
 
     return (
@@ -42,10 +64,10 @@ const DashReviews = ({ role }) => {
             <div className='flex flex-col gap-8 mt-8'>
                 {(role === "customer") ?
                     reviews?.filter(review => (review.name === "John Alex"))?.map((review) => (
-                        <Review key={review.id} review={review} role={role} feedbackDetails={feedbackDetails} setFeedbackDetails={setFeedbackDetails} setModalStatus={setModalStatus} setModalType={setModalType} />
+                        <Review key={review.id} review={review} role={role} feedbackDetails={feedbackDetails} setFeedbackDetails={setFeedbackDetails} setModalStatus={setModalStatus} setModalType={setModalType} handleReviewsDelete={handleReviewsDelete} />
                     )) :
                     reviews?.map((review) => (
-                        <Review key={review.id} review={review} role={role} />
+                        <Review key={review.id} review={review} role={role} handleFeedbackPublishStatus={handleFeedbackPublishStatus} />
                     ))
                 }
             </div>

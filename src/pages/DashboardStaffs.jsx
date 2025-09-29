@@ -12,22 +12,53 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import { branches } from '../constants/branches'
+import { useEffect } from 'react'
+import { addStaffsApi, deleteStaffsApi, getStaffsApi, updateStaffsApi } from '../api/staffApi'
 
 const DashboardStaffs = ({ role }) => {
     const [modalStatus, setModalStatus] = useState(false);
     const [modalType, setModalType] = useState("");
+    /*  const [allStaffDetails, setAllStaffDetails] = useState({
+         staffName: "",
+         email: "",
+         role: "",
+         branch: "",
+         status: ""
+     }); */
 
     const [staffDetails, setStaffDetails] = useState({
+        /* add id for api calls */
         staffName: "",
         email: "",
         role: "",
         branch: "",
         status: ""
     });
-    const handleSaveStaff = () => {
+
+    /*  useEffect(() => {
+         (async function () {
+             const apiData = await getStaffsApi();
+             setAllStaffDetails(apiData);
+         })();
+     }, []); */
+
+    const handleSaveStaff = async () => {
         /* api call */
+        /* let result;
+       if (modalType === "Edit") {
+           result = await updateStaffsApi(feedbackDetails);
+       } else if (modalType === "Add") {
+           result = await addStaffsApi(feedbackDetails);
+       } */
+
         handleCloseEditDetails(staffDetails, setStaffDetails, setModalStatus, setModalType);
     };
+
+    const handleStaffsDelete = async () => {
+        /* api call */
+        // const result = await deleteStaffsApi(id);
+    };
+
     return (
         <section className='mt-10' id='CustomerVehicle'>
             <div className='flex justify-between items-center'>

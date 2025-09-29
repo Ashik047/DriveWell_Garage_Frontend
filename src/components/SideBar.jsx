@@ -11,7 +11,7 @@ import {
     StarIcon,
     UsersIcon
 } from 'lucide-react'
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const SideBar = ({ pathName, role, setSidebarStatus }) => {
     let activeSidebarTabs;
@@ -41,10 +41,12 @@ const SideBar = ({ pathName, role, setSidebarStatus }) => {
     return (
         <aside className="w-[300px] bg-white shadow-[5px_5px_10px_1px_#cdcdcd] fixed top-0 left-0 h-screen z-8">
             <button className="ms-auto block hover:opacity-60 text-lg mt-6 me-2 cursor-pointer md:hidden" onClick={() => setSidebarStatus(false)}><FontAwesomeIcon icon={faXmark} /></button>
-            <div className="flex px-4 pt-4 md:pt-10 items-center">
-                <WrenchIcon size={32} strokeWidth={2} className="me-2 transform -translate-y-5 text-accent" />
-                <h1 className="text-2xl font-bold mb-10"> DriveWell Garage</h1>
-            </div>
+            <Link to={"/"}>
+                <div className="flex px-4 pt-4 md:pt-10 items-center">
+                    <WrenchIcon size={32} strokeWidth={2} className="me-2 transform -translate-y-5 text-accent" />
+                    <h1 className="text-2xl font-bold mb-10"> DriveWell Garage</h1>
+                </div>
+            </Link>
 
             {
                 activeSidebarTabs.map((tab) => {

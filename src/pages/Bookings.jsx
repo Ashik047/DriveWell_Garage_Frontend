@@ -5,9 +5,13 @@ import FormControl from '@mui/material/FormControl';
 import { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import { handleChange } from '../helpers/formHelper';
+import { useAddBookingsMutation } from '../redux/slices/bookingsApi';
 
 
 const Bookings = () => {
+
+    // const [addBookings] = useAddBookingsMutation();
+
     const [bookingData, setBookingData] = useState({
         vehicle: "",
         service: "",
@@ -16,11 +20,17 @@ const Bookings = () => {
         description: ""
     });
 
+    const handleBookingSubmit = async (e) => {
+        e.preventDefault();
+
+        // const result= await addBookings(bookingData); 
+    }
+
     return (
         <main className="grow px-4 py-6 rounded-md">
             <h2 className="mt-4 text-center font-bold text-4xl">Book Your Service</h2>
             <p className="text-center text-lg mt-3 text-dim-black">Schedule an appointment with our expert mechanics</p>
-            <form className="w-full shadow-[5px_5px_10px_1px_#cdcdcd] px-15 py-10 mt-8">
+            <form className="w-full shadow-[5px_5px_10px_1px_#cdcdcd] px-15 py-10 mt-8" onSubmit={handleBookingSubmit}>
                 <FormControl fullWidth>
                     <InputLabel id="vehicle" required>Select Your Vehicle</InputLabel>
                     <Select

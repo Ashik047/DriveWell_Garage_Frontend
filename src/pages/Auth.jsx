@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { handleChange } from '../helpers/formHelper'
 import TextField from '@mui/material/TextField';
 import { WrenchIcon } from 'lucide-react'
+import { loginApi, passwordResetApi, registerApi } from '../api/authApi'
 
 
 const Auth = ({ hasAccount, forgotPassword }) => {
@@ -29,7 +30,21 @@ const Auth = ({ hasAccount, forgotPassword }) => {
             phone: ""
         });
         navigate(route);
-    }
+    };
+
+    const handleLogin = async () => {
+        /*  const {email,password} = authDetails;
+         const result = await loginApi({email,password}); */
+    };
+    const handlePasswordReset = async () => {
+        /* const {email,password,name,phone} = authDetails;
+        const result = await registerApi({email,password,name,phone}); */
+    };
+    const handleRegister = async () => {
+        /* const {email} = authDetails;
+        const result = await passwordResetApi({email}); */
+    };
+
     return (
         <main className='w-full min-h-screen px-4 xs:px-12 sm:px-4 py-8 grid place-content-center' id='Login'>
             <section className='bg-white sm:w-[500px] xs:w-[400px] w-[300px] px-6 py-8 rounded-lg text-center' >
@@ -51,7 +66,7 @@ const Auth = ({ hasAccount, forgotPassword }) => {
                 }
                 <form>
                     {!hasAccount && !forgotPassword && <TextField id="name" name='name' variant="outlined" type="text" className='w-full' onChange={(e) => handleChange(e, setAuthDetails)} value={authDetails.name} label="Full Name" sx={{ mt: 3 }} required />}
-                    <TextField id="email" name='email' variant="outlined" type="email" className='w-full' onChange={(e) => handleChange(e, setAuthDetails)} value={authDetails.email} label="Email" sx={forgotPassword ? { mt: 6 } : { mt: 3 }} required />
+                    <TextField id="email" name='email' variant="outlined" type="email" className='w-full' onChange={(e) => handleChange(e, setAuthDetails)} value={authDetails.email} label="Email" sx={forgotPassword ? { mt: 6 } : { mt: 3 }} required autoSave={rememberMe} />
                     {!hasAccount && !forgotPassword && <TextField id="phone" name='phone' variant="outlined" type="tel" className='w-full' onChange={(e) => handleChange(e, setAuthDetails)} value={authDetails.phone} label="Phone Number" sx={{ mt: 3 }} required />}
                     {!forgotPassword && <TextField id="password" name='password' variant="outlined" type="password" className='w-full' onChange={(e) => handleChange(e, setAuthDetails)} value={authDetails.password} label="Password" sx={{ mt: 3 }} required />}
                     {!hasAccount && !forgotPassword && <TextField id="confirmPassword" name='confirmPassword' variant="outlined" type="password" className='w-full' onChange={(e) => handleChange(e, setAuthDetails)} value={authDetails.confirmPassword} label="Confirm Password" sx={{ mt: 3 }} required />}
@@ -64,14 +79,14 @@ const Auth = ({ hasAccount, forgotPassword }) => {
                                     <label htmlFor="remember" className='ms-2'>Remember Me</label>
                                 </div>
                             </div>
-                            <button type='submit' className='mt-9 bg-accent text-white font-semibold rounded-md hover:opacity-75 px-6 w-full py-3 cursor-pointer'>Log In</button>
+                            <button type='submit' className='mt-9 bg-accent text-white font-semibold rounded-md hover:opacity-75 px-6 w-full py-3 cursor-pointer' onClick={handleLogin}>Log In</button>
                         </> : forgotPassword ?
                             <>
                                 <p className='text-dim-black text-sm text-start mt-1'>A new temporary password will be sent to your mail.</p>
-                                <button type='submit' className='mt-13 mb-4 bg-accent text-white font-semibold rounded-md hover:opacity-75 px-6 w-full py-3 cursor-pointer'>Reset Password</button>
+                                <button type='submit' className='mt-13 mb-4 bg-accent text-white font-semibold rounded-md hover:opacity-75 px-6 w-full py-3 cursor-pointer' onClick={handlePasswordReset}>Reset Password</button>
                             </> :
                             <>
-                                <button type='submit' className='mt-9 bg-accent text-white font-semibold rounded-md hover:opacity-75 px-6 w-full py-3 cursor-pointer'>Register</button>
+                                <button type='submit' className='mt-9 bg-accent text-white font-semibold rounded-md hover:opacity-75 px-6 w-full py-3 cursor-pointer' onClick={handleRegister}>Register</button>
                             </>
                     }
                 </form>

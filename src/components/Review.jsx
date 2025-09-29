@@ -7,7 +7,7 @@ import { useState } from 'react'
 import TextField from '@mui/material/TextField'
 import { handleEditDetails } from '../helpers/formHelper';
 
-const Review = ({ review, role, feedbackDetails, setFeedbackDetails, setModalStatus, setModalType }) => {
+const Review = ({ review, role, feedbackDetails, setFeedbackDetails, setModalStatus, setModalType, handleReviewsDelete, handleFeedbackPublishStatus }) => {
 
     return (
         <div className="w-full shadow-[5px_5px_10px_1px_#cdcdcd] grid grid-cols-[50px_1fr_100px] p-4 gap-2">
@@ -26,12 +26,12 @@ const Review = ({ review, role, feedbackDetails, setFeedbackDetails, setModalSta
                 <span>{review.date}</span>
                 {(role === "customer") &&
                     <div className='flex justify-end gap-2'>
-                        <button className='cursor-pointer bg-blue-600 hover:opacity-75 text-white font-bold px-4 py-1 rounded-md flex items-center' onClick={() => handleEditDetails(review, feedbackDetails, setFeedbackDetails, setModalStatus, setModalType)}><SquarePen size={15} className='me-1 inline' /> Edit</button><button className='cursor-pointer bg-red-600 hover:opacity-75 text-white font-bold px-4 py-1 rounded-md flex items-center'><Trash size={15} className='inline me-2' /> Delete</button>
+                        <button className='cursor-pointer bg-blue-600 hover:opacity-75 text-white font-bold px-4 py-1 rounded-md flex items-center' onClick={() => handleEditDetails(review, feedbackDetails, setFeedbackDetails, setModalStatus, setModalType)}><SquarePen size={15} className='me-1 inline' /> Edit</button><button className='cursor-pointer bg-red-600 hover:opacity-75 text-white font-bold px-4 py-1 rounded-md flex items-center' onClick={handleReviewsDelete}><Trash size={15} className='inline me-2' /> Delete</button>
                     </div>
                 }
                 {(role === "manager") &&
                     <div className='flex justify-end gap-2'>
-                        <button className='cursor-pointer me-2 mb-2 hover:opacity-75 text-black font-bold px-4 py-1 rounded-md flex items-center' style={review.publish === true ? { backgroundColor: "#E5E7EB" } : { backgroundColor: "#BFDBFE" }} >{review.publish === true ? "Hide" : "Publish"}</button>
+                        <button className='cursor-pointer me-2 mb-2 hover:opacity-75 text-black font-bold px-4 py-1 rounded-md flex items-center' style={review.publish === true ? { backgroundColor: "#E5E7EB" } : { backgroundColor: "#BFDBFE" }} onClick={handleFeedbackPublishStatus}>{review.publish === true ? "Hide" : "Publish"}</button>
                     </div>
                 }
             </div>

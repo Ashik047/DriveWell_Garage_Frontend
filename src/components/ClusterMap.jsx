@@ -2,12 +2,14 @@ import React, { useEffect, useRef } from "react";
 import * as maptilersdk from "@maptiler/sdk";
 import { branches } from "../constants/branches"
 import "@maptiler/sdk/dist/maptiler-sdk.css";
+import { useGetBranchesQuery } from "../redux/slices/branchesApi";
 
 const ClusterMap = () => {
     const mapContainer = useRef(null);
     const map = useRef(null);
     const API_KEY = import.meta.env.VITE_MAPTILER_API;
 
+    // const { data:branchesDetails, error: branchesError, isLoading: branchesLoading } = useGetBranchesQuery(); 
 
     useEffect(() => {
         if (map.current) return;
@@ -142,7 +144,7 @@ const ClusterMap = () => {
                 map.current.getCanvas().style.cursor = '';
             });
         });
-    }, []);
+    }, [/* branchesDetails */]);
     return (
         <div ref={mapContainer} className="mt-6 w-full h-[500px] rounded-md"></div>
     )

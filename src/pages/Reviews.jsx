@@ -5,8 +5,12 @@ import Review from '../components/Review';
 import { useMemo } from 'react';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useGetReviewsQuery } from '../redux/slices/reviewsApi';
 
 const Reviews = () => {
+
+    // const { data:reviewsDetails, error: reviewsError, isLoading: reviewsLoading, refetch } = useGetReviewsQuery(); 
+
     const reviews = useMemo(() => serviceReviews, []);
 
     const [avgRating, setAvgRatings] = useState(0);
@@ -33,7 +37,7 @@ const Reviews = () => {
             </div>
             <div className='flex flex-col gap-8'>
                 {
-                    reviews?.map(review => (
+                    reviews?.filter((review) => review.publish === true)?.map(review => (
                         <Review key={review.id} review={review} role="viewer" />
                     ))
                 }
