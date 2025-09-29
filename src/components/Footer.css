@@ -1,0 +1,17 @@
+#Footer p,
+#Footer li {
+    font-size: smaller;
+    color: #D1D5DB;
+}
+
+#Footer h4 {
+    font-weight: 600;
+    color: #FFF;
+}
+
+#Footer ul {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 12px;
+}

@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+html {
+    font-size: clamp(12px, 0.6rem + 0.5vw, 16px);
+}
+
+#CustomerVehicle th,
+#CustomerVehicle td {
+    padding: 5px;
+}
+
+@theme {
+    --color-primary: #FFF;
+    --color-secondary: #1F2937;
+    --color-accent: #F97316;
+    --color-box: #374151;
+    --color-dim: #D1D5DB;
+    --color-dim-black: #4B5563;
+    --breakpoint-xs: 412px;
+}
