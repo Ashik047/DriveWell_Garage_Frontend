@@ -14,6 +14,7 @@ import DashboardReviews from './pages/DashboardReviews'
 import DashboardProfile from './pages/DashboardProfile'
 import DashboardServices from './pages/DashboardServices'
 import DashboardBranches from './pages/DashboardBranches'
+import DashboardStaffs from './pages/DashboardStaffs'
 
 function App() {
 
@@ -40,7 +41,7 @@ function App() {
         <Route path="/worker-dashboard" element={<DashboardLayout role={"worker"} />}>
           <Route index element={<Navigate to="bookings" replace />} />
           <Route path='bookings' element={<DashboardBookings role={"worker"} />} />
-          <Route path='vehicles' element={<DashboardVehicle role={"worker"} />} />
+          {/* <Route path='vehicles' element={<DashboardVehicle role={"worker"} />} /> */}
           <Route path='services' element={<DashboardServices role={"worker"} />} />
           <Route path='branches' element={<DashboardBranches role={"worker"} />} />
           <Route path='feedbacks' element={<DashboardReviews role={"worker"} />} />
@@ -49,7 +50,8 @@ function App() {
         <Route path="/manager-dashboard" element={<DashboardLayout role={"manager"} />}>
           <Route index element={<Navigate to="bookings" replace />} />
           <Route path='bookings' element={<DashboardBookings role={"manager"} />} />
-          <Route path='vehicles' element={<DashboardVehicle role={"manager"} />} />
+          <Route path='staffs' element={<DashboardStaffs role={"manager"} />} />
+          {/* <Route path='vehicles' element={<DashboardVehicle role={"manager"} />} /> */}
           <Route path='services' element={<DashboardServices role={"manager"} />} />
           <Route path='branches' element={<DashboardBranches role={"manager"} />} />
           <Route path='feedbacks' element={<DashboardReviews role={"manager"} />} />

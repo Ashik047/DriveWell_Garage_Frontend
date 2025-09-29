@@ -37,37 +37,34 @@ const CustomerVehicle = ({ role }) => {
             <table className='table-auto border-separate border-spacing-3  w-full text-center mt-10 shadow-[5px_5px_10px_1px_#cdcdcd]'>
                 <thead>
                     <tr>
-                        <th className='p-4'>#</th>
                         <th className='p-4'>Vehicle</th>
                         {(role !== "customer") && <th className='p-4'>Owner</th>}
                         <th className='p-4'>Year</th>
                         <th className='p-4 hidden md:block'>License Plate</th>
-                        {(role === "customer" || role === "manager") && <th className='p-4'></th>}
+                        {(role === "customer" /* || role === "manager" */) && <th className='p-4'></th>}
                     </tr>
                 </thead>
                 <tbody className='text-dim-black'>
-                    {(role === "customer") ?
+                    {/* (role === "customer") ? */
                         userCars?.filter(car => car.customer === "John Alex")?.map((car) => {
                             return <tr key={car.id}>
-                                <td className='p-4'>{car.id}</td>
                                 <td className='p-4'>{car.car}</td>
                                 {(role !== "customer") && <td className='p-4'>{car.customer}</td>}
                                 <td className='p-4'>{car.year}</td>
                                 <td className='p-4 hidden md:block'>{car.plate}</td>
-                                {(role === "customer" || role === "manager") && <td className='p-4'><button className='cursor-pointer' onClick={() => handleEditDetails(car, vehicleDetails, setVehicleDetails, setModalStatus, setModalType)}><SquarePen size={15} className='text-blue-700 me-1' /></button><button className='cursor-pointer'><Trash size={15} className='text-red-600' /></button></td>}
+                                {(role === "customer" /* || role === "manager" */) && <td className='p-4'><button className='cursor-pointer' onClick={() => handleEditDetails(car, vehicleDetails, setVehicleDetails, setModalStatus, setModalType)}><SquarePen size={15} className='text-blue-700 me-1' /></button><button className='cursor-pointer'><Trash size={15} className='text-red-600' /></button></td>}
                             </tr>
                         })
-                        :
+                        /* :
                         userCars?.map((car) => {
                             return <tr key={car.id}>
-                                <td className='p-4'>{car.id}</td>
                                 <td className='p-4'>{car.car}</td>
                                 {(role !== "customer") && <td className='p-4'>{car.customer}</td>}
                                 <td className='p-4'>{car.year}</td>
                                 <td className='p-4 hidden md:block'>{car.plate}</td>
                                 {(role === "customer" || role === "manager") && <td className='p-4'><button className='cursor-pointer' onClick={() => handleEditDetails(car, vehicleDetails, setVehicleDetails, setModalStatus, setModalType)}><SquarePen size={15} className='text-blue-700 me-1' /></button><button className='cursor-pointer'><Trash size={15} className='text-red-600' /></button></td>}
                             </tr>
-                        })
+                        }) */
                     }
                 </tbody>
             </table>

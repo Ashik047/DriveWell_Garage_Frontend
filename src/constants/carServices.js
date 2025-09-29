@@ -15,7 +15,7 @@ export const services = [
     {
         id: 1,
         name: "Oil Change",
-        icon: Droplet,
+        icon: Droplet,  /* replace with url of images */
         description: "Regular oil changes to keep your engine running smoothly and extend its lifespan.",
         price: 29.99,
     },
