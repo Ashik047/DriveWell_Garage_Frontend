@@ -19,9 +19,10 @@ export const handleEditDetails = (data, details, setDetails, setModalStatus, set
     });
     setModalStatus(true);
 };
-export const handleCloseEditDetails = (details, setDetails, setModalStatus, setModalType) => {
+export const handleCloseEditDetails = (details, setDetails, setModalStatus, setModalType, setFormSubmitStatus) => {
     handleReset(details, setDetails);
     setModalStatus(false);
+    setFormSubmitStatus(false);
     setModalType("");
 };
 

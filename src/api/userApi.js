@@ -1,9 +1,10 @@
-import { commonApi } from "./commonApi"
-import { serverUrl } from "./serverURL"
 
-export const getUsersApi = async () => {
-    return await commonApi("GET", `${serverUrl}/users`);
-}
-export const updateUsersApi = async (reqBody) => {
-    return await commonApi("PUT", `${serverUrl}/users`, reqBody);
-}
+export const getUserDetailsApi = async ({ axiosWithToken }) => {
+    return await axiosWithToken.get("/user/self");
+};
+export const updateUserDetailsApi = async ({ axiosWithToken, reqBody }) => {
+    return await axiosWithToken.patch("/user/self", reqBody);
+};
+export const updateUserPasswordApi = async ({ axiosWithToken, reqBody }) => {
+    return await axiosWithToken.patch("/user/self/secret", reqBody);
+};

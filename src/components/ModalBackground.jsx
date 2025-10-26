@@ -1,8 +1,8 @@
 import React from 'react'
 
-const ModalBackground = () => {
+const ModalBackground = ({ zIndex }) => {
     return (
-        <div className="w-full h-full bg-dim-black opacity-60 z-10 absolute inset-0"></div>
+        <div className={`w-full h-full bg-dim-black opacity-60 z-${zIndex} fixed inset-0`}></div>
     )
 }
 

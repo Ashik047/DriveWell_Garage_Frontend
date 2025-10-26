@@ -15,48 +15,56 @@ import DashboardProfile from './pages/DashboardProfile'
 import DashboardServices from './pages/DashboardServices'
 import DashboardBranches from './pages/DashboardBranches'
 import DashboardStaffs from './pages/DashboardStaffs'
+import PageNotFound from './pages/PageNotFound'
+import PersistLogin from './pages/PersistLogin'
+import Trail from './pages/Trail'
 
 function App() {
 
   return (
     <>
       <Routes>
-        <Route path="/" element={<LandingLayout />}>
-          <Route index element={<Home />} />
-          <Route path='services' element={<Services />} />
-          <Route path='reviews' element={<Reviews />} />
-          <Route path='booking' element={<Bookings />} />
-          <Route path='contact' element={<Contact />} />
+        <Route path='/login' element={<Auth hasAccount />} />
+        <Route path='/register' element={<Auth />} />
+        {/* <Route path='/trial' element={<Trail />} /> */}
+        <Route path='/forgot' element={<Auth forgotPassword />} />
+        <Route element={<PersistLogin />}>
+          <Route path="/" element={<LandingLayout />}>
+            <Route index element={<Home />} />
+            <Route path='services' element={<Services />} />
+            <Route path='reviews' element={<Reviews />} />
+            <Route path='booking' element={<Bookings />} />
+            <Route path='contact' element={<Contact />} />
+          </Route>
+          <Route path="/customer-dashboard" element={<DashboardLayout role={"Customer"} />}>
+            <Route index element={<Navigate to="bookings" replace />} />
+            <Route path='bookings' element={<DashboardBookings role={"Customer"} />} />
+            <Route path='vehicles' element={<DashboardVehicle role={"Customer"} />} />
+            <Route path='feedbacks' element={<DashboardReviews role={"Customer"} />} />
+            <Route path='profile' element={<DashboardProfile />} />
+          </Route>
+          <Route path="/staff-dashboard" element={<DashboardLayout role={"Staff"} />}>
+            <Route index element={<Navigate to="bookings" replace />} />
+            <Route path='bookings' element={<DashboardBookings role={"Staff"} />} />
+            {/* <Route path='vehicles' element={<DashboardVehicle role={"Staff"} />} /> */}
+            <Route path='services' element={<DashboardServices role={"Staff"} />} />
+            <Route path='branches' element={<DashboardBranches role={"Staff"} />} />
+            <Route path='feedbacks' element={<DashboardReviews role={"Staff"} />} />
+            <Route path='profile' element={<DashboardProfile />} />
+          </Route>
+          <Route path="/manager-dashboard" element={<DashboardLayout role={"Manager"} />}>
+            <Route index element={<Navigate to="bookings" replace />} />
+            <Route path='bookings' element={<DashboardBookings role={"Manager"} />} />
+            <Route path='staffs' element={<DashboardStaffs role={"Manager"} />} />
+            {/* <Route path='vehicles' element={<DashboardVehicle role={"Manager"} />} /> */}
+            <Route path='services' element={<DashboardServices role={"Manager"} />} />
+            <Route path='branches' element={<DashboardBranches role={"Manager"} />} />
+            <Route path='feedbacks' element={<DashboardReviews role={"Manager"} />} />
+            <Route path='profile' element={<DashboardProfile />} />
+          </Route>
         </Route>
-        <Route path='login' element={<Auth hasAccount />} />
-        <Route path='register' element={<Auth />} />
-        <Route path='forgot' element={<Auth forgotPassword />} />
-        <Route path="/customer-dashboard" element={<DashboardLayout role={"customer"} />}>
-          <Route index element={<Navigate to="bookings" replace />} />
-          <Route path='bookings' element={<DashboardBookings role={"customer"} />} />
-          <Route path='vehicles' element={<DashboardVehicle role={"customer"} />} />
-          <Route path='feedbacks' element={<DashboardReviews role={"customer"} />} />
-          <Route path='profile' element={<DashboardProfile />} />
-        </Route>
-        <Route path="/worker-dashboard" element={<DashboardLayout role={"worker"} />}>
-          <Route index element={<Navigate to="bookings" replace />} />
-          <Route path='bookings' element={<DashboardBookings role={"worker"} />} />
-          {/* <Route path='vehicles' element={<DashboardVehicle role={"worker"} />} /> */}
-          <Route path='services' element={<DashboardServices role={"worker"} />} />
-          <Route path='branches' element={<DashboardBranches role={"worker"} />} />
-          <Route path='feedbacks' element={<DashboardReviews role={"worker"} />} />
-          <Route path='profile' element={<DashboardProfile />} />
-        </Route>
-        <Route path="/manager-dashboard" element={<DashboardLayout role={"manager"} />}>
-          <Route index element={<Navigate to="bookings" replace />} />
-          <Route path='bookings' element={<DashboardBookings role={"manager"} />} />
-          <Route path='staffs' element={<DashboardStaffs role={"manager"} />} />
-          {/* <Route path='vehicles' element={<DashboardVehicle role={"manager"} />} /> */}
-          <Route path='services' element={<DashboardServices role={"manager"} />} />
-          <Route path='branches' element={<DashboardBranches role={"manager"} />} />
-          <Route path='feedbacks' element={<DashboardReviews role={"manager"} />} />
-          <Route path='profile' element={<DashboardProfile />} />
-        </Route>
+        <Route path='*' element={<PageNotFound />} />
+
       </Routes >
     </>
   )

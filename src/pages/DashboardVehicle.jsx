@@ -8,7 +8,7 @@ import TextField from '@mui/material/TextField'
 import { handleAdd, handleChange, handleCloseEditDetails, handleEditDetails } from '../helpers/formHelper';
 import ModalBackground from '../components/ModalBackground'
 import { useEffect } from 'react'
-import { getUsersApi, updateUsersApi } from '../api/userApi'
+// import { getUsersApi, updateUsersApi } from '../api/userApi'
 
 const CustomerVehicle = ({ role }) => {
     const [modalStatus, setModalStatus] = useState(false);

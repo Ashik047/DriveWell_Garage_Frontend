@@ -25,8 +25,8 @@ const Review = ({ review, role, feedbackDetails, setFeedbackDetails, setModalSta
             <div className='text-dim-black text-sm flex flex-col justify-between'>
                 <span>{review.date}</span>
                 {(role === "customer") &&
-                    <div className='flex justify-end gap-2'>
-                        <button className='cursor-pointer bg-blue-600 hover:opacity-75 text-white font-bold px-4 py-1 rounded-md flex items-center' onClick={() => handleEditDetails(review, feedbackDetails, setFeedbackDetails, setModalStatus, setModalType)}><SquarePen size={15} className='me-1 inline' /> Edit</button><button className='cursor-pointer bg-red-600 hover:opacity-75 text-white font-bold px-4 py-1 rounded-md flex items-center' onClick={handleReviewsDelete}><Trash size={15} className='inline me-2' /> Delete</button>
+                    <div className='flex justify-end gap-3'>
+                        <button className='text-sm cursor-pointer hover:opacity-75 text-blue-600 font-bold rounded-md flex items-center' onClick={() => handleEditDetails(review, feedbackDetails, setFeedbackDetails, setModalStatus, setModalType)}><SquarePen size={15} className='me-1 inline' /> Edit</button><button className='text-sm cursor-pointer hover:opacity-75 text-red-600 font-bold rounded-md flex items-center' onClick={handleReviewsDelete}><Trash size={15} className='inline me-1' /> Delete</button>
                     </div>
                 }
                 {(role === "manager") &&

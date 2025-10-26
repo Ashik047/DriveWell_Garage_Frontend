@@ -9,7 +9,7 @@ import TextField from '@mui/material/TextField'
 import { handleAdd, handleChange, handleCloseEditDetails } from '../helpers/formHelper';
 import Rating from '@mui/material/Rating'
 import ModalBackground from '../components/ModalBackground'
-import { useAddReviewsMutation, useDeleteReviewsMutation, useUpdateReviewsMutation } from '../redux/slices/reviewsApi'
+import { useAddReviewsMutation, useDeleteReviewsMutation, useGetReviewsQuery, useUpdateReviewsMutation } from '../redux/slices/reviewsApi'
 
 
 
@@ -25,9 +25,10 @@ const DashReviews = ({ role }) => {
         center: ""
     });
 
-    const [addReviewsDataApi] = useAddReviewsMutation();
-    const [editReviewsDataApi] = useUpdateReviewsMutation();
-    const [deleteReviewsDataApi] = useDeleteReviewsMutation();
+    // const { data:reviewsDetails, error: reviewsError, isLoading: reviewsLoading, refetch } = useGetReviewsQuery(); 
+    // const [addReviewsDataApi] = useAddReviewsMutation();
+    // const [editReviewsDataApi] = useUpdateReviewsMutation();
+    // const [deleteReviewsDataApi] = useDeleteReviewsMutation();
 
     const handleSaveFeedback = async () => {
         /* api call */

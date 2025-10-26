@@ -15,11 +15,11 @@ import { Link, useNavigate } from "react-router-dom";
 
 const SideBar = ({ pathName, role, setSidebarStatus }) => {
     let activeSidebarTabs;
-    if (role === "manager") {
+    if (role === "Manager") {
         activeSidebarTabs = sidebarTabs.filter(tab => (tab.id !== "vehicles"));
-    } else if (role === "worker") {
+    } else if (role === "Staff") {
         activeSidebarTabs = sidebarTabs.filter(tab => (tab.id === "bookings" || tab.id === "services" || tab.id === "branches" || tab.id === "feedbacks" || tab.id === "profile"));
-    } else if (role === "customer") {
+    } else if (role === "Customer") {
         activeSidebarTabs = sidebarTabs.filter(tab => (tab.id === "bookings" || tab.id === "vehicles" || tab.id === "feedbacks" || tab.id === "profile"));
     }
     const [activeTab, setActiveTab] = useState(pathName);

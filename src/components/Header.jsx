@@ -1,11 +1,17 @@
 import { faBars, faUser, faWrench, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { WrenchIcon } from 'lucide-react'
+import { useContext } from 'react'
 import { useState } from 'react'
 import { Link } from "react-router-dom"
+import AuthContext from '../context/AuthProvider'
 
 const Header = () => {
     const [isCollapsed, setIsCollapsed] = useState(true);
+
+    /*     const { auth } = useContext(AuthContext);
+        console.log(auth); */
+
     return (
         <header className='shadow-lg px-4 items-center py-5 relative'>
             <div className='flex justify-between items-center w-full'>
