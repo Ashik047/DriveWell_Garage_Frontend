@@ -1,7 +1,12 @@
 import axios from "./axios";
 
-export const getAllServicesApi = async () => {
-    return await axios.get("/service");
+export const getAllServicesApi = async (type = "") => {
+    const params = new URLSearchParams();
+    if (type) {
+        params.append("type", type);
+    }
+    const query = params.toString() ? `?${params.toString()}` : "";
+    return await axios.get(`/service${query}`);
 };
 
 export const addServiceApi = async ({ axiosWithToken, reqBody }) => {

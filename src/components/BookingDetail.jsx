@@ -11,12 +11,10 @@ import {
     Clock4,
     MessageSquareIcon,
     Trash
-
 } from 'lucide-react'
 import { useState } from 'react';
 import { workerNotes } from '../constants/workerNotes';
 import ModalBackground from './ModalBackground';
-import { useDeleteBookingsMutation, useUpdateBookingsMutation } from '../redux/slices/bookingsApi'
 
 
 const BookingDetail = ({ bookingDetails, role }) => {
@@ -26,12 +24,10 @@ const BookingDetail = ({ bookingDetails, role }) => {
     const [workingNotes, setWorkingNotes] = useState("");
     const [workingStatus, setWorkingStatus] = useState(bookingDetails.status);
 
-    /*     const [editBookingsDataApi] = useUpdateBookingsMutation();
-        const [deleteBookingsDataApi] = useDeleteBookingsMutation(); */
 
     const handleSubmitNote = async () => {
         /* api */
-        // const result = await editBookingsDataApi({workingNotes});
+
 
         setWorkingNotes("");
     };
@@ -41,7 +37,6 @@ const BookingDetail = ({ bookingDetails, role }) => {
     };
     const handleNoteDelete = async () => {
         /* api */
-        // const result = await editBookingsDataApi();
 
     };
     const handleCancelBookingStatus = () => {
@@ -50,14 +45,12 @@ const BookingDetail = ({ bookingDetails, role }) => {
     };
     const handleSaveBookingStatus = async () => {
         /* api */
-        // const result = await editBookingsDataApi({workingStatus});
 
         setWorkingStatus(bookingDetails.status);    /* not needed in final code */
         setUpdateStatus(false);
     };
     const handleBookingDelete = async () => {
         /* api */
-        // const result = await deleteBookingsDataApi();
 
     };
 

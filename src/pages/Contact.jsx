@@ -10,11 +10,10 @@ import { useState } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment, faEnvelope, faPhone } from "@fortawesome/free-solid-svg-icons";
 import { handleChange } from "../helpers/formHelper";
-import { useGetBranchesQuery } from "../redux/slices/branchesApi";
+import { getAllBranchesApi } from "../api/branchApi";
+import { useQuery } from "@tanstack/react-query";
 
 const Contact = () => {
-
-    // const { data:branchesDetails, error: branchesError, isLoading: branchesLoading } = useGetBranchesQuery(); 
 
     const [mailContent, setMailContent] = useState({
         name: "",
@@ -24,6 +23,12 @@ const Contact = () => {
         message: "",
     });
 
+    const { data: allBranches, isLoading: allBranchesLoading, isError: allBranchesIsError, error: allBranchesError } = useQuery({
+        queryKey: ['Branch'],
+        queryFn: () => getAllBranchesApi(),
+        select: response => response?.data?.sort((a, b) => (b._id - a._id)),
+    }
+    );
 
     return (
         <main className="grow px-4 py-6 rounded-md" id="Contact">
@@ -31,14 +36,14 @@ const Contact = () => {
             <p className="text-center text-lg mt-3 text-dim-black">Have questions or need assistance? Reach out to our team or visit one of our locations.</p>
             <section id="branches">
                 <h3 className="mt-18 font-bold text-3xl">Our Branches</h3>
-                <ClusterMap />
+                <ClusterMap allBranches={allBranches} />
             </section>
             <section>
                 <h3 className="mt-18 font-bold text-3xl">Find a Location</h3>
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(320px,1fr))] xl:grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-8 mt-6">
                     {
-                        branches?.features?.map((branch) => (
-                            <Branch key={branch.data.id} branch={branch} />
+                        allBranches?.map((branch) => (
+                            <Branch key={branch?._id} branch={branch} />
                         ))
                     }
                 </div>

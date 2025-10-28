@@ -1,9 +1,6 @@
-import React from 'react'
-import { services } from '../constants/carServices'
 import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { SquarePen, Trash } from 'lucide-react'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import TextField from '@mui/material/TextField'
 import { handleAdd, handleChange, handleCloseEditDetails, handleEditDetails } from '../helpers/formHelper';
 import ModalBackground from "../components/ModalBackground"
@@ -13,20 +10,15 @@ import { addServiceApi, deleteServiceApi, editServiceApi, getAllServicesApi } fr
 import { Commet } from 'react-loading-indicators'
 import { toast, ToastContainer } from 'react-toastify'
 import Service from '../components/Service'
-// import { useAddServicesMutation, useDeleteServicesMutation, useGetServicesQuery, useUpdateServicesMutation } from '../redux/slices/servicesApi'
+import AuthContext from '../context/AuthProvider';
 
-const DashboardServices = ({ role }) => {
+const DashboardServices = () => {
     const [modalStatus, setModalStatus] = useState(false);
     const [modalType, setModalType] = useState("");
     const [prevImage, setPrevImage] = useState("");
     const [imagePreview, setImagePreview] = useState("");
     const [serviceId, setServiceId] = useState("");
     const [formSubmitStatus, setFormSubmitStatus] = useState(false);
-
-    // const { data:servicesDetails, error: servicesError, isLoading: servicesLoading } = useGetServicesQuery(); 
-    // const [addServicesDataApi] = useAddServicesMutation();
-    // const [editServicesDataApi] = useUpdateServicesMutation();
-    // const [deleteServicesDataApi] = useDeleteServicesMutation();
 
     const [serviceDetails, setServiceDetails] = useState({
         serviceName: "",
@@ -35,10 +27,14 @@ const DashboardServices = ({ role }) => {
         price: ""
     });
 
+    const { auth } = useContext(AuthContext);
+
     const queryClient = useQueryClient();
     const axiosWithToken = useAxiosWithToken();
 
-    const { data: allServices, isLoading: allServicesLoading, isError: allServicesIsError, error: allServicesError } = useQuery(['Service'], getAllServicesApi, {
+    const { data: allServices, isLoading: allServicesLoading, isError: allServicesIsError, error: allServicesError } = useQuery({
+        queryKey: ['Service'],
+        queryFn: () => getAllServicesApi(),
         select: response => response?.data?.sort((a, b) => (b._id - a._id)),
     }
     );
@@ -50,13 +46,13 @@ const DashboardServices = ({ role }) => {
     });
 
     const editServiceMutation = useMutation(editServiceApi, {
-        onSuccess: (data, variables) => {
+        onSuccess: () => {
             queryClient.invalidateQueries(['Service']);
         }
     });
 
     const deleteServiceMutation = useMutation(deleteServiceApi, {
-        onSuccess: (data, variables) => {
+        onSuccess: () => {
             queryClient.invalidateQueries(['Service']);
         }
     });
@@ -69,8 +65,7 @@ const DashboardServices = ({ role }) => {
         setServiceDetails(prev => ({ ...prev, image }));
         const imageUrl = URL.createObjectURL(image);
         setImagePreview(imageUrl);
-    }
-
+    };
 
     const handleSaveService = async () => {
         setFormSubmitStatus(true);
@@ -106,9 +101,7 @@ const DashboardServices = ({ role }) => {
             } catch (err) {
                 toast.error(err.response.data.Message);
             }
-            setImagePreview("");
-            setPrevImage("");
-            handleCloseEditDetails(serviceDetails, setServiceDetails, setModalStatus, setModalType, setFormSubmitStatus);
+            handleCloseEditModal();
         }
     };
 
@@ -129,9 +122,10 @@ const DashboardServices = ({ role }) => {
     };
 
     const handleCloseEditModal = () => {
+        setServiceId("");
         setImagePreview("");
         setPrevImage("");
-        handleCloseEditDetails(serviceDetails, setServiceDetails, setModalStatus, setModalType, setFormSubmitStatus)
+        handleCloseEditDetails(serviceDetails, setServiceDetails, setModalStatus, setModalType, setFormSubmitStatus);
     };
 
     return (
@@ -140,18 +134,12 @@ const DashboardServices = ({ role }) => {
                 <div>
                     <h3 className='text-2xl font-bold'>Service Management</h3>
                 </div>
-                {(role === "Manager") && <button className='px-4 py-2 bg-accent cursor-pointer text-white font-bold rounded-md hover:opacity-75' onClick={() => handleAdd(setModalStatus, setModalType)}><FontAwesomeIcon icon={faPlus} />  Add&nbsp;Services</button>}
+                {(auth?.role === "Manager") && <button className='px-4 py-2 bg-accent cursor-pointer text-white font-bold rounded-md hover:opacity-75' onClick={() => handleAdd(setModalStatus, setModalType)}><FontAwesomeIcon icon={faPlus} />  Add&nbsp;Services</button>}
             </div>
             <div className="mt-13 grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(320px,1fr))] xl:grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-8 ">
                 {
                     allServices?.map(service => {
-                        return <div key={service._id} className="shadow-[5px_5px_10px_1px_#cdcdcd] p-6">
-                            <img src={service.image.url} alt={service.serviceName} className="w-full aspect-3/2 object-cover object-center" />
-                            <h3 className="font-bold text-xl mt-4">{service.serviceName}</h3>
-                            <p className="text-dim-black text-sm mt-2">{service.description}</p>
-                            <p className="text-accent font-medium mt-4">Starting at $<span>{service.price}</span></p>
-                            {(role === "Manager") && <div className='p-4 text-right'><button aria-label="Edit-Service" className='cursor-pointer' onClick={() => handleEditService(service)}><SquarePen size={17} className='text-blue-700 me-3' /></button><button aria-label="Delete-Service" className='cursor-pointer disabled:opacity-50 disabled:hover:opacity-50 disabled:cursor-not-allowed' disabled={deleteServiceMutation.isPending} onClick={() => handleServicesDelete(service._id)}><Trash size={17} className='text-red-600' /></button></div>}
-                        </div>
+                        return <Service key={service?._id} service={service} handleEditService={handleEditService} handleServicesDelete={handleServicesDelete} deletePending={deleteServiceMutation.isPending} role={auth?.role} />
                     })
                 }
             </div>
@@ -168,7 +156,7 @@ const DashboardServices = ({ role }) => {
                             <button className='hover:opacity-60 disabled:opacity-50 disabled:hover:opacity-50 disabled:cursor-not-allowed cursor-pointer' onClick={handleCloseEditModal} disabled={addServiceMuation.isPending || editServiceMutation.isPending}><FontAwesomeIcon icon={faXmark} className='text-xl' /></button>
                         </div>
                         <hr className='text-dim mt-2' />
-                        <form className='mt-10 flex flex-col gap-1 h-[70vh] overflow-y-scroll pt-4 pb-10 px-4'>
+                        <form className='mt-10 flex flex-col gap-1 max-h-[70vh] overflow-y-auto pt-4 pb-10 px-4'>
                             <TextField id="serviceName" name='serviceName' variant="outlined" type="text" className='w-full mt-8' label="Name" onChange={(e) => handleChange(e, setServiceDetails)} value={serviceDetails.serviceName} />
                             <p className='text-red-700 text-sm ms-1 mb-2' style={{ visibility: (!formSubmitStatus || serviceDetails.serviceName) && "hidden" }}>Serive name is required</p>
                             <TextField id="price" name='price' label="Starting Price" variant="outlined" type="number" className='w-full' onChange={(e) => handleChange(e, setServiceDetails)} value={serviceDetails.price} inputProps={{

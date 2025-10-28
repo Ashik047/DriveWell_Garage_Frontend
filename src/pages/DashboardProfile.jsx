@@ -1,17 +1,16 @@
 import TextField from '@mui/material/TextField'
-import React from 'react'
 import { handleChange, handleReset } from '../helpers/formHelper'
 import { useState } from 'react';
 import { useEffect } from 'react';
-// import { userDetails } from '../constants/userDetails';
 import { getUserDetailsApi, updateUserDetailsApi, updateUserPasswordApi } from '../api/userApi';
 import useAxiosWithToken from '../hooks/useAxiosWithToken';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast, ToastContainer } from 'react-toastify';
 import { Commet } from 'react-loading-indicators';
-// import { updateUsersApi } from '../api/userApi';
 
 const DashProfile = () => {
+    const [editDetailsStatus, setEditDetailsStatus] = useState(false);
+    const [editPasswordStatus, setEditPasswordStatus] = useState(false);
     const [prevImage, setPrevImage] = useState("");
     const [imagePreview, setImagePreview] = useState("");
     const [formSubmitStatus, setFormSubmitStatus] = useState(false);
@@ -23,19 +22,24 @@ const DashProfile = () => {
         role: "",
         image: "",
     });
+
     const [passwordData, setPasswordData] = useState({
         currentPassword: "",
         newPassword: "",
         confirmPassword: ""
     });
+
     const queryClient = useQueryClient();
     const axiosWithToken = useAxiosWithToken();
-    const { data: userDetails, isLoading: userDetialsLoading, isError: userDetailsIsError, error: userDetailsError } = useQuery({ queryKey: ['User'], queryFn: () => getUserDetailsApi({ axiosWithToken }) });
+
+    const { data: userDetails, isLoading: userDetailsLoading, isError: userDetailsIsError, error: userDetailsError } = useQuery({ queryKey: ['User'], queryFn: () => getUserDetailsApi({ axiosWithToken }) });
+
     const editUserDetailsMutation = useMutation(updateUserDetailsApi, {
-        onSuccess: (data, variables) => {
+        onSuccess: () => {
             queryClient.invalidateQueries(['User']);
         }
     });
+
     const editUserPasswordMutation = useMutation(updateUserPasswordApi);
 
     const dataReset = () => {
@@ -58,7 +62,7 @@ const DashProfile = () => {
         setProfileData(prev => ({ ...prev, image }));
         const imageUrl = URL.createObjectURL(image);
         setImagePreview(imageUrl);
-    }
+    };
 
     const handleCancelEditProfile = () => {
         setFormSubmitStatus(false);
@@ -67,6 +71,7 @@ const DashProfile = () => {
         dataReset();
         setEditDetailsStatus(false);
     };
+
     const handleSaveEditProfile = async () => {
         setFormSubmitStatus(true);
         const { fullName, email, phone, address, image } = profileData;
@@ -95,7 +100,6 @@ const DashProfile = () => {
             } catch (err) {
                 toast.error(err.response.data.Message);
             }
-
             setFormSubmitStatus(false);
             setImagePreview("");
             setPrevImage("");
@@ -103,11 +107,13 @@ const DashProfile = () => {
             setEditDetailsStatus(false);
         }
     };
+
     const handleCancelEditPassword = () => {
         setFormSubmitStatus(false);
         handleReset(passwordData, setPasswordData);
         setEditPasswordStatus(false);
     };
+
     const handleSaveEditPassword = async () => {
         setFormSubmitStatus(true);
         const { currentPassword, newPassword, confirmPassword } = passwordData;
@@ -129,8 +135,6 @@ const DashProfile = () => {
         }
     };
 
-    const [editDetailsStatus, setEditDetailsStatus] = useState(false);
-    const [editPasswordStatus, setEditPasswordStatus] = useState(false);
     return (
         <section className='mt-10' id='CustomerVehicle'>
             <div className='flex justify-between items-center'>

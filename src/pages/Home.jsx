@@ -4,13 +4,26 @@ import { services } from "../constants/carServices"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faArrowRight, faUser } from "@fortawesome/free-solid-svg-icons"
 import ClusterMap from "../components/ClusterMap"
-import { branches } from "../constants/branches"
 import { Clock4, MapPin, Phone } from "lucide-react"
-import { useGetServicesQuery } from "../redux/slices/servicesApi"
+import { useQuery } from "@tanstack/react-query"
+import { getAllServicesApi } from "../api/serviceApi"
+import { getAllBranchesApi } from "../api/branchApi"
 
 const Home = () => {
 
-    // const { data:servicesDetails, error: servicesError, isLoading: servicesLoading } = useGetServicesQuery(); 
+    const { data: allServices, isLoading: allServicesLoading, isError: allServicesIsError, error: allServicesError } = useQuery({
+        queryKey: ['Service'],
+        queryFn: () => getAllServicesApi(),
+        select: response => response?.data?.sort((a, b) => (b._id - a._id)),
+    }
+    );
+
+    const { data: allBranches, isLoading: allBranchesLoading, isError: allBranchesIsError, error: allBranchesError } = useQuery({
+        queryKey: ['Branch'],
+        queryFn: () => getAllBranchesApi(["branchName", "longitude", "latitude"]),
+        select: response => response?.data?.sort((a, b) => (b._id - a._id)),
+    }
+    );
 
     return (
         <main className="grow">
@@ -30,8 +43,8 @@ const Home = () => {
                 <p className="text-center text-lg mt-3 text-dim-black">Professional auto repair services for all makes and models</p>
                 <div className="mt-8 grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-8">
                     {
-                        services?.filter(service => service.id < 5).map(service => {
-                            return <Service key={service.id} service={service} />
+                        allServices?.filter((service, index) => index < 5).map(service => {
+                            return <Service key={service?._id} service={service} />
                         })
                     }
                 </div>
@@ -57,13 +70,13 @@ const Home = () => {
                     <h4 className="font-bold text-xl mt-2">Main Location</h4>
                     <p className="text-dim-black mt-3">Piravom, Kerala</p>
                     <p className="text-dim-black">India, 686664</p>
-                    <Link to={"/contact"} className="text-accent font-semibold hover:underline" >View All Locations</Link>
+                    <Link to={"/contact"} className="text-accent font-semibold hover:underline mt-3 inline-block" >View All Locations</Link>
                 </div>
             </section>
             <section className="px-4 py-10">
                 <h2 className="mt-4 text-center font-bold text-4xl">Our Branches</h2>
                 <p className="text-center text-lg mt-3 text-dim-black">Find the DriveWell Garage location nearest to you</p>
-                <ClusterMap />
+                <ClusterMap allBranches={allBranches} />
                 <Link to={"/contact"} className="mt-12 w-fit bg-accent px-4 py-3 rounded-md mx-auto hover:opacity-75 font-semibold text-white block">View All Branches <FontAwesomeIcon icon={faArrowRight} /></Link>
             </section>
         </main>

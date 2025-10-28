@@ -5,12 +5,18 @@ import { useContext } from 'react'
 import { useState } from 'react'
 import { Link } from "react-router-dom"
 import AuthContext from '../context/AuthProvider'
+import useAxiosWithToken from '../hooks/useAxiosWithToken'
+import { useQuery } from '@tanstack/react-query'
+import { getUserProfilePicApi } from '../api/userApi'
 
 const Header = () => {
     const [isCollapsed, setIsCollapsed] = useState(true);
 
-    /*     const { auth } = useContext(AuthContext);
-        console.log(auth); */
+    const axiosWithToken = useAxiosWithToken();
+
+    const { data: profilePic, isLoading: profilePicLoading, isError: profilePicIsError, error: profilePicError } = useQuery({ queryKey: ['User'], queryFn: () => getUserProfilePicApi({ axiosWithToken }), retry: false, throwOnError: false });
+
+    const { auth } = useContext(AuthContext);
 
     return (
         <header className='shadow-lg px-4 items-center py-5 relative'>
@@ -24,8 +30,8 @@ const Header = () => {
                         <li className='font-semibold hover:text-accent'><Link to={"/reviews"}>Reviews</Link></li>
                         <li className='font-semibold hover:text-accent'><Link to={"/booking"}>Book Now</Link></li>
                         <li className='font-semibold hover:text-accent'><Link to={"/contact"}>Contact</Link></li>
-                        {/* <li className='py-1 px-3 font-semibold bg-accent rounded-md hover:opacity-75 p'><Link to={"/login"}><FontAwesomeIcon icon={faUser} className='me-0.5' />Login</Link></li> */}
-                        <li><Link to={"customer-dashboard"} className='w-[50px] aspect-square bg-blue-100 rounded-[50%] px-2.5 py-2 me-4 hover:bg-blue-200'><FontAwesomeIcon className='' icon={faUser} /></Link></li>
+                        {!auth.accessToken ? <li className='py-1 px-3 font-semibold bg-accent rounded-md hover:opacity-75 p'><Link to={"/login"}><FontAwesomeIcon icon={faUser} className='me-0.5' />Login</Link></li> :
+                            <li className='h-[50px]'><Link to={"/dashboard"}>{<img className='w-[50px] aspect-square rounded-[50%]' src={profilePic?.data?.image?.url} alt='Profile picture' />}</Link></li>}
                         {/* <li><Link to={"worker-dashboard"} className='w-[50px] aspect-square bg-blue-100 rounded-[50%] px-2.5 py-2 me-4 hover:bg-blue-200'><FontAwesomeIcon className='' icon={faUser} /></Link></li> */}
                         {/* <li><Link to={"manager-dashboard"} className='w-[50px] aspect-square bg-blue-100 rounded-[50%] px-2.5 py-2 me-4 hover:bg-blue-200'><FontAwesomeIcon className='' icon={faUser} /></Link></li> */}
                         {/* use condition in the "to" attribute since the rest are the same */}
@@ -39,8 +45,8 @@ const Header = () => {
                     <li className='font-semibold py-2'><Link className='hover:text-accent' to={"/reviews"}>Reviews</Link></li>
                     <li className='font-semibold py-2'><Link className='hover:text-accent' to={"/booking"}>Book Now</Link></li>
                     <li className='font-semibold py-2'><Link className='hover:text-accent' to={"/contact"}>Contact</Link></li>
-                    {/* <li className='font-semibold py-2'><Link className='hover:text-accent' to={"/login"}>Login</Link></li> */}
-                    <li className='font-semibold py-2'><Link className='hover:text-accent' to={"/customer-dashboard"}>Dashboard</Link></li>
+                    {!auth.accessToken ? <li className='font-semibold py-2'><Link className='hover:text-accent' to={"/login"}>Login</Link></li> :
+                        <li className='font-semibold py-2'><Link className='hover:text-accent' to={"/dashboard"}>Dashboard</Link></li>}
                     {/* <li className='font-semibold py-2'><Link className='hover:text-accent' to={"/worker-dashboard"}>Dashboard</Link></li> */}
                     {/* <li className='font-semibold py-2'><Link className='hover:text-accent' to={"/manager-dashboard"}>Dashboard</Link></li> */}
                 </ul>

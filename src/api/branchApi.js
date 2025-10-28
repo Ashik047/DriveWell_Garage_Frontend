@@ -2,7 +2,7 @@ import axios from "./axios";
 
 export const getAllBranchesApi = async (fields = []) => {
     const params = new URLSearchParams();
-    if (fields.length) {
+    if (fields.length > 0) {
         params.append("fields", fields.join(","));
     }
     const query = params.toString() ? `?${params.toString()}` : "";

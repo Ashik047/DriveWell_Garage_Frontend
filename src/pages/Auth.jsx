@@ -1,22 +1,18 @@
-import React, { useContext, useEffect } from 'react'
 import "./Login.css"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faWrench } from '@fortawesome/free-solid-svg-icons'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { handleChange } from '../helpers/formHelper'
 import TextField from '@mui/material/TextField';
 import { WrenchIcon } from 'lucide-react'
 import { loginApi, passwordResetApi, registerApi } from '../api/authApi'
 import { ToastContainer, toast } from 'react-toastify';
-import axios from '../api/axios';
-import AuthContext from "../context/AuthProvider";
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 
 const Auth = ({ hasAccount, forgotPassword }) => {
     const [rememberMe, setRememberMe] = useState(false);
-    // const { setAuth } = useContext(AuthContext);
     const [authDetails, setAuthDetails] = useState({
         email: "",
         fullName: "",
@@ -25,10 +21,14 @@ const Auth = ({ hasAccount, forgotPassword }) => {
         phone: ""
     });
     const [formSubmitStatus, setFormSubmitStatus] = useState(false);
+
     const navigate = useNavigate();
-    // const queryClient = useQueryClient();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || "/";
+
     const registerMutation = useMutation(registerApi);
     const loginMutation = useMutation(loginApi);
+
     const handleFormReset = () => {
         setAuthDetails({
             email: "",
@@ -38,6 +38,7 @@ const Auth = ({ hasAccount, forgotPassword }) => {
             phone: ""
         });
     };
+
     const handleNavigate = (route) => {
         handleFormReset();
         setFormSubmitStatus(false);
@@ -52,23 +53,23 @@ const Auth = ({ hasAccount, forgotPassword }) => {
                 const result = await loginMutation.mutateAsync({ email, password });
                 if (result.status === 200) {
                     toast.success(result.data.Message);
-                    // const { role, accessToken } = result.data;
-                    // setAuth({ role, accessToken });
                     handleFormReset();
                     setFormSubmitStatus(false);
                     setTimeout(() => {
-                        navigate("/");
+                        navigate(from, { replace: true });
                     }, 1500);
                 }
             } catch (err) {
-                toast.error(err.response.data.Message)
+                toast.error(err.response.data.Message);
             }
         }
     };
+
     const handlePasswordReset = async () => {
         /* const {email,password,name,phone} = authDetails;
         const result = await registerApi({email,password,name,phone}); */
     };
+
     const handleRegister = async () => {
         setFormSubmitStatus(true);
         const { fullName, email, password, confirmPassword, phone } = authDetails;
@@ -95,13 +96,13 @@ const Auth = ({ hasAccount, forgotPassword }) => {
                 handleFormReset();
                 setFormSubmitStatus(false);
             }
-
         }
     };
 
     return (
         <main className='w-full min-h-screen px-4 xs:px-12 sm:px-4 py-8 grid place-content-center' id='Login'>
-            <section className='bg-white sm:w-[500px] xs:w-[400px] w-[300px] px-6 py-8 rounded-lg text-center' >
+            <section className='bg-white sm:w-[500px] xs:w-[400px] w-[300px] px-6 py-8 rounded-lg text-center relative' >
+                <Link to={"/"} className="absolute left-0 top-0 pt-10 ps-5"><FontAwesomeIcon icon={faArrowLeft} className="text-xl" /></Link>
                 {/* style={hasAccount ? { marginTop: "80px" } : forgotPassword ? { marginTop: "100px" } : { marginTop: "20px" }} */}
                 <WrenchIcon className='text-accent mx-auto mt-6' size={45} />
                 {hasAccount ?

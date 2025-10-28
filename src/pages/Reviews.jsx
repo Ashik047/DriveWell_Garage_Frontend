@@ -5,13 +5,19 @@ import Review from '../components/Review';
 import { useMemo } from 'react';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useGetReviewsQuery } from '../redux/slices/reviewsApi';
+import { getAllFeedbacksApi } from '../api/feedbackApi';
+import { useQuery } from '@tanstack/react-query';
 
 const Reviews = () => {
 
-    // const { data:reviewsDetails, error: reviewsError, isLoading: reviewsLoading, refetch } = useGetReviewsQuery(); 
+    const { data: allFeedbacks, isLoading: allFeedbacksLoading, isError: allFeedbacksIsError, error: allFeedbacksError } = useQuery({
+        queryKey: ['Feedback'],
+        queryFn: () => getAllFeedbacksApi(),
+        select: response => response?.data?.sort((a, b) => (b.date - a.date)),
+    }
+    );
 
-    const reviews = useMemo(() => serviceReviews, []);
+    const reviews = useMemo(() => allFeedbacks, [allFeedbacks]);
 
     const [avgRating, setAvgRatings] = useState(0);
     useEffect(() => {
@@ -35,10 +41,10 @@ const Reviews = () => {
                         <p className='text-dim-black'>No reviews available</p>
                 }
             </div>
-            <div className='flex flex-col gap-8'>
+            <div className='flex flex-col gap-8 mt-6'>
                 {
-                    reviews?.filter((review) => review.publish === true)?.map(review => (
-                        <Review key={review.id} review={review} role="viewer" />
+                    reviews?.filter((feedback) => feedback.status === true)?.map(feedback => (
+                        <Review key={feedback._id} feedback={feedback} />
                     ))
                 }
 

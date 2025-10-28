@@ -9,3 +9,16 @@ export const loginApi = async (reqBody) => {
 export const passwordResetApi = async (reqBody) => {
     return await axios.post("/reset-password", reqBody);
 }
+export const userLogoutApi = async ({ axiosWithToken }) => {
+    return await axiosWithToken.post("/logout");
+}
+export const refreshTokenApi = async () => {
+    try {
+        return await axios.post("/refresh-token");
+    } catch (err) {
+        if (err?.response?.status === 401) {
+            return null;
+        }
+        return err;
+    }
+}

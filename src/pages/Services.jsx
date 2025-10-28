@@ -1,19 +1,25 @@
+import { useQuery } from "@tanstack/react-query";
+import { getAllServicesApi } from "../api/serviceApi";
 import Service from "../components/Service"
 import { services } from "../constants/carServices"
-import { useGetServicesQuery } from "../redux/slices/servicesApi"
 
 const Services = () => {
 
-    // const { data:servicesDetails, error: servicesError, isLoading: servicesLoading } = useGetServicesQuery(); 
+    const { data: allServices, isLoading: allServicesLoading, isError: allServicesIsError, error: allServicesError } = useQuery({
+        queryKey: ['Service'],
+        queryFn: () => getAllServicesApi(),
+        select: response => response?.data?.sort((a, b) => (b._id - a._id)),
+    }
+    );
 
     return (
         <main className="grow px-4 py-6">
             <h2 className="mt-4 text-center font-bold text-4xl">Our Services</h2>
             <p className="text-center text-lg mt-3 text-dim-black">Professional auto repair and maintenance services for all makes and models. Our certified technicians use the latest tools and technology.</p>
-            <div className="mt-13 grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(320px,1fr))] xl:grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-8 ">
+            <div className="mt-13 grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(320px,1fr))] xl:grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-8">
                 {
-                    services?.map(service => {
-                        return <Service key={service.id} service={service} />
+                    allServices?.map(service => {
+                        return <Service key={service?._id} service={service} />
                     })
                 }
             </div>

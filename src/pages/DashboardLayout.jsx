@@ -6,14 +6,10 @@ import { useState } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons"
 
-const DashboardLayout = ({ role }) => {
-    const location = useLocation();
-    const [pathName, setPathName] = useState("");
+const DashboardLayout = () => {
     const [sidebarStatus, setSidebarStatus] = useState("");
     const [isMdUp, setIsMdUp] = useState(false);
     useEffect(() => {
-        const pathArray = (location.pathname.split("/"));
-        setPathName(pathArray[2]);
         // Tailwind `md` breakpoint = 768px
         const mediaQuery = window.matchMedia("(min-width: 768px)");
 
@@ -31,7 +27,7 @@ const DashboardLayout = ({ role }) => {
     return (
         <div className="grow relative">
             <button className='block md:hidden cursor-pointer absolute top-10 left-2' onClick={() => setSidebarStatus(prev => !prev)}>{!sidebarStatus ? <FontAwesomeIcon className='text-3xl' icon={faBars} /> : <FontAwesomeIcon className='text-3xl' icon={faXmark} />}</button>
-            {(sidebarStatus || isMdUp) && <SideBar pathName={pathName} role={role} setSidebarStatus={setSidebarStatus} />}
+            {(sidebarStatus || isMdUp) && <SideBar setSidebarStatus={setSidebarStatus} />}
             <main className="p-8  ms-10 md:ms-[300px]">
                 <h2 className="text-4xl font-bold">Dashboard</h2>
                 <p className="text-dim-black mt-2">Welcome back,</p>

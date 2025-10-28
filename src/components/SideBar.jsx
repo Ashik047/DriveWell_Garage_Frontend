@@ -1,7 +1,8 @@
 import { faRightFromBracket, faWrench, faXmark } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { sidebarTabs } from "../constants/sidebarTabs";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import useAxiosWithToken from '../hooks/useAxiosWithToken'
 import {
     WrenchIcon,
     UserIcon,
@@ -11,31 +12,60 @@ import {
     StarIcon,
     UsersIcon
 } from 'lucide-react'
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import AuthContext from "../context/AuthProvider";
+import { toast, ToastContainer } from "react-toastify";
+import { userLogoutApi } from '../api/authApi';
+import { useMutation } from '@tanstack/react-query';
+import { Commet } from "react-loading-indicators";
 
-const SideBar = ({ pathName, role, setSidebarStatus }) => {
+const SideBar = ({ setSidebarStatus }) => {
+
     let activeSidebarTabs;
-    if (role === "Manager") {
+    const location = useLocation();
+
+    const { auth, setAuth } = useContext(AuthContext);
+
+    const axiosWithToken = useAxiosWithToken();
+
+    const userLogoutMutation = useMutation({
+        mutationFn: () => userLogoutApi({ axiosWithToken })
+    });
+
+    if (auth?.role === "Manager") {
         activeSidebarTabs = sidebarTabs.filter(tab => (tab.id !== "vehicles"));
-    } else if (role === "Staff") {
+    } else if (auth?.role === "Staff") {
         activeSidebarTabs = sidebarTabs.filter(tab => (tab.id === "bookings" || tab.id === "services" || tab.id === "branches" || tab.id === "feedbacks" || tab.id === "profile"));
-    } else if (role === "Customer") {
+    } else if (auth?.role === "Customer") {
         activeSidebarTabs = sidebarTabs.filter(tab => (tab.id === "bookings" || tab.id === "vehicles" || tab.id === "feedbacks" || tab.id === "profile"));
     }
-    const [activeTab, setActiveTab] = useState(pathName);
+    const [activeTab, setActiveTab] = useState("bookings");
+
     useEffect(() => {
-        setActiveTab(pathName);
-    }, [pathName])
+        const path = location.pathname.split("/")[2] || "bookings";
+        setActiveTab(path);
+    }, []);
 
 
     const navigate = useNavigate();
     const handleTabChange = (clickedTab) => {
         setActiveTab(clickedTab.id);
-        navigate(`/${role}-dashboard${clickedTab.link}`);
+        navigate(`/dashboard${clickedTab.link}`);
     };
-    const handleLogout = () => {
-        /* logout Logic*/
-        navigate("/");
+
+    const handleLogout = async () => {
+        try {
+            const result = await userLogoutMutation.mutateAsync();
+            if (result.status === 200) {
+                toast.success(result.data.Message);
+            }
+            setTimeout(() => {
+                setAuth({});
+                navigate("/");
+            }, 1500);
+        } catch (err) {
+            toast.error(err.response.data.Message);
+        }
     }
 
     return (
@@ -49,7 +79,7 @@ const SideBar = ({ pathName, role, setSidebarStatus }) => {
             </Link>
 
             {
-                activeSidebarTabs.map((tab) => {
+                activeSidebarTabs?.map((tab) => {
                     return <button key={tab.name} className="text-black block font-medium text-xl p-4 cursor-pointer w-full text-left" style={activeTab === tab.id ? { backgroundColor: "#DBEAFE", color: "#F97316", borderLeft: "3px solid #F97316" } : {}} onClick={() => handleTabChange(tab)}>
                         {tab.name === "Bookings" && <CalendarIcon size={28} className="inline me-2 transform -translate-y-1" />}
                         {tab.name === "Customers" && <UserIcon size={28} className="inline me-2 transform -translate-y-1" />}
@@ -65,7 +95,12 @@ const SideBar = ({ pathName, role, setSidebarStatus }) => {
             }
 
 
-            <button onClick={handleLogout} className="text-red-600 font-semibold text-2xl cursor-pointer mt-10 ms-10">Logout <FontAwesomeIcon icon={faRightFromBracket} /></button>
+            <button onClick={handleLogout} className="text-red-600 font-semibold text-2xl cursor-pointer mt-10 ms-10 disabled:opacity-50 disabled:hover:opacity-50 disabled:cursor-not-allowed" disabled={userLogoutMutation.isPending}>Logout <FontAwesomeIcon icon={faRightFromBracket} /></button>
+            {(userLogoutMutation.isPending) && <>
+                <div className='fixed left-[50%] top-[50%] transform -translate-[50%] z-14'><Commet color="#F97316" size="medium" text="" textColor="" /></div>
+            </>
+            }
+            <ToastContainer theme="light" position="top-center" autoClose={1500} />
         </aside>
     )
 }

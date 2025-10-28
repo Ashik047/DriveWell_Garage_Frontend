@@ -22,12 +22,19 @@ const useAxiosWithToken = () => {
         const responseIntercept = axiosWithToken.interceptors.response.use(
             response => response,
             async (error) => {
-                const prevRequest = error?.config;
-                if ((error?.response?.status === 401) && !prevRequest?.sent) {
-                    prevRequest.sent = true;
-                    const { accessToken } = await refresh();
-                    prevRequest.headers['Authorization'] = `Bearer ${accessToken}`;
-                    return axiosWithToken(prevRequest);
+                try {
+                    const prevRequest = error?.config;
+                    if ((error?.response?.status === 401) && !prevRequest?.sent) {
+                        prevRequest.sent = true;
+                        const { accessToken } = await refresh();
+                        prevRequest.headers['Authorization'] = `Bearer ${accessToken}`;
+                        return axiosWithToken(prevRequest);
+                    }
+                } catch (err) {
+                    if (err?.response?.status === 401) {
+                        return Promise.resolve({ data: null });
+                    }
+                    return Promise.reject(error);
                 }
                 return Promise.reject(error);
             }
