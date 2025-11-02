@@ -1,10 +1,10 @@
-import { Outlet, useLocation } from "react-router-dom"
+import { Link, Outlet, useLocation } from "react-router-dom"
 import SideBar from "../components/SideBar"
 import { useSelector } from "react-redux"
 import { useEffect } from "react"
 import { useState } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons"
+import { faArrowLeft, faBars, faXmark } from "@fortawesome/free-solid-svg-icons"
 
 const DashboardLayout = () => {
     const [sidebarStatus, setSidebarStatus] = useState("");
@@ -29,6 +29,7 @@ const DashboardLayout = () => {
             <button className='block md:hidden cursor-pointer absolute top-10 left-2' onClick={() => setSidebarStatus(prev => !prev)}>{!sidebarStatus ? <FontAwesomeIcon className='text-3xl' icon={faBars} /> : <FontAwesomeIcon className='text-3xl' icon={faXmark} />}</button>
             {(sidebarStatus || isMdUp) && <SideBar setSidebarStatus={setSidebarStatus} />}
             <main className="p-8  ms-10 md:ms-[300px]">
+                <Link to={"/"} className="cursor-pointer -mt-2 mb-2 block text-dim-black hover:text-accent text-sm"><FontAwesomeIcon icon={faArrowLeft} /> Home</Link>
                 <h2 className="text-4xl font-bold">Dashboard</h2>
                 <p className="text-dim-black mt-2">Welcome back,</p>
                 <Outlet />

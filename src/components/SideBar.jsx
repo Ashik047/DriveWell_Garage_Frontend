@@ -64,7 +64,7 @@ const SideBar = ({ setSidebarStatus }) => {
                 navigate("/");
             }, 1500);
         } catch (err) {
-            toast.error(err.response.data.Message);
+            toast.error(err?.response?.data?.Message);
         }
     }
 

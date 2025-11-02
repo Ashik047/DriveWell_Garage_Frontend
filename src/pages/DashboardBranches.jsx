@@ -102,7 +102,7 @@ const DashboardBranches = () => {
                     }
                 }
             } catch (err) {
-                toast.error(err.response.data.Message);
+                toast.error(err?.response?.data?.Message);
             }
             handleCloseEditModal();
         }
@@ -121,7 +121,7 @@ const DashboardBranches = () => {
                 toast.success(result.data.Message);
             }
         } catch (err) {
-            toast.error(err.response.data.Message);
+            toast.error(err?.response?.data?.Message);
         }
     };
 

@@ -60,7 +60,7 @@ const Auth = ({ hasAccount, forgotPassword }) => {
                     }, 1500);
                 }
             } catch (err) {
-                toast.error(err.response.data.Message);
+                toast.error(err?.response?.data?.Message);
             }
         }
     };
@@ -92,7 +92,7 @@ const Auth = ({ hasAccount, forgotPassword }) => {
                     }, 1500);
                 }
             } catch (err) {
-                toast.error(err.response.data.Message);
+                toast.error(err?.response?.data?.Message);
                 handleFormReset();
                 setFormSubmitStatus(false);
             }

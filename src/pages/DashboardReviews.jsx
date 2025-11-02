@@ -56,6 +56,7 @@ const DashReviews = () => {
         queryKey: ['Feedback'],
         queryFn: () => getFeedbacksApi({ axiosWithToken }),
         select: response => response?.data?.sort((a, b) => (b.date - a.date)),
+        enabled: !!auth?.accessToken
     }
     );
 
@@ -99,7 +100,7 @@ const DashReviews = () => {
                     }
                 }
             } catch (err) {
-                toast.error(err.response.data.Message);
+                toast.error(err?.response?.data?.Message);
             }
             handleCloseEditModal();
         }
@@ -112,7 +113,7 @@ const DashReviews = () => {
                 toast.success(result.data.Message);
             }
         } catch (err) {
-            toast.error(err.response.data.Message);
+            toast.error(err?.response?.data?.Message);
         }
     };
 
@@ -120,7 +121,7 @@ const DashReviews = () => {
         try {
             await editFeedbackStatusMutation.mutateAsync({ axiosWithToken, id });
         } catch (err) {
-            toast.error(err.response.data.Message);
+            toast.error(err?.response?.data?.Message);
         }
     };
 

@@ -98,7 +98,7 @@ const DashProfile = () => {
                     }
                 }
             } catch (err) {
-                toast.error(err.response.data.Message);
+                toast.error(err?.response?.data?.Message);
             }
             setFormSubmitStatus(false);
             setImagePreview("");
@@ -127,7 +127,7 @@ const DashProfile = () => {
                     toast.success(result.data.Message);
                 }
             } catch (err) {
-                toast.error(err.response.data.Message);
+                toast.error(err?.response?.data?.Message);
             }
             setFormSubmitStatus(false);
             handleReset(passwordData, setPasswordData);

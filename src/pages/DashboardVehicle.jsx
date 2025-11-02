@@ -10,6 +10,8 @@ import useAxiosWithToken from '../hooks/useAxiosWithToken'
 import { addVehicleApi, deleteVehicleApi, editVehicleApi, getMyVehiclesApi } from '../api/vehicleApi'
 import { Commet } from 'react-loading-indicators'
 import { toast, ToastContainer } from 'react-toastify'
+import AuthContext from '../context/AuthProvider'
+import { useContext } from 'react'
 
 const CustomerVehicle = () => {
     const [modalStatus, setModalStatus] = useState(false);
@@ -23,13 +25,16 @@ const CustomerVehicle = () => {
         year: ""
     });
 
+    const { auth } = useContext(AuthContext);
+
     const queryClient = useQueryClient();
     const axiosWithToken = useAxiosWithToken();
 
     const { data: myVehicles, isLoading: myVehiclesLoading, isError: myVehiclesIsError, error: myVehiclesError } = useQuery({
         queryKey: ['Vehicle'],
         queryFn: () => getMyVehiclesApi({ axiosWithToken }),
-        select: response => response?.data?.sort((a, b) => (b.vehicle - a.vehicle)),
+        select: response => response?.data?.sort((a, b) => (a.vehicle.toLowerCase().localeCompare(b.vehicle.toLowerCase()))),
+        enabled: !!auth?.accessToken
     }
     );
 
@@ -72,7 +77,7 @@ const CustomerVehicle = () => {
                     }
                 }
             } catch (err) {
-                toast.error(err.response.data.Message);
+                toast.error(err?.response?.data?.Message);
             }
             handleCloseEditModal();
         }
@@ -85,7 +90,7 @@ const CustomerVehicle = () => {
                 toast.success(result.data.Message);
             }
         } catch (err) {
-            toast.error(err.response.data.Message);
+            toast.error(err?.response?.data?.Message);
         }
     };
 

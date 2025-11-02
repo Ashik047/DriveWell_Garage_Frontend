@@ -12,11 +12,12 @@ import { getUserProfilePicApi } from '../api/userApi'
 const Header = () => {
     const [isCollapsed, setIsCollapsed] = useState(true);
 
+    const { auth } = useContext(AuthContext);
+
     const axiosWithToken = useAxiosWithToken();
 
     const { data: profilePic, isLoading: profilePicLoading, isError: profilePicIsError, error: profilePicError } = useQuery({ queryKey: ['User'], queryFn: () => getUserProfilePicApi({ axiosWithToken }), retry: false, throwOnError: false });
 
-    const { auth } = useContext(AuthContext);
 
     return (
         <header className='shadow-lg px-4 items-center py-5 relative'>
@@ -45,7 +46,7 @@ const Header = () => {
                     <li className='font-semibold py-2'><Link className='hover:text-accent' to={"/reviews"}>Reviews</Link></li>
                     <li className='font-semibold py-2'><Link className='hover:text-accent' to={"/booking"}>Book Now</Link></li>
                     <li className='font-semibold py-2'><Link className='hover:text-accent' to={"/contact"}>Contact</Link></li>
-                    {!auth.accessToken ? <li className='font-semibold py-2'><Link className='hover:text-accent' to={"/login"}>Login</Link></li> :
+                    {!auth?.accessToken ? <li className='font-semibold py-2'><Link className='hover:text-accent' to={"/login"}>Login</Link></li> :
                         <li className='font-semibold py-2'><Link className='hover:text-accent' to={"/dashboard"}>Dashboard</Link></li>}
                     {/* <li className='font-semibold py-2'><Link className='hover:text-accent' to={"/worker-dashboard"}>Dashboard</Link></li> */}
                     {/* <li className='font-semibold py-2'><Link className='hover:text-accent' to={"/manager-dashboard"}>Dashboard</Link></li> */}

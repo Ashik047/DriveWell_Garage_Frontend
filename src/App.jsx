@@ -17,6 +17,8 @@ import DashboardBranches from './pages/DashboardBranches'
 import DashboardStaffs from './pages/DashboardStaffs'
 import PageNotFound from './pages/PageNotFound'
 import PersistLogin from './pages/PersistLogin'
+import PaymentSuccess from './pages/PaymentSuccess'
+import PaymentError from './pages/PaymentError'
 
 function App() {
 
@@ -61,6 +63,8 @@ function App() {
             <Route path='profile' element={<DashboardProfile />} />
           </Route>
         </Route>
+        <Route path='/payment-success' element={<PaymentSuccess />} />
+        <Route path='/payment-error' element={<PaymentError />} />
         <Route path='*' element={<PageNotFound />} />
 
       </Routes >

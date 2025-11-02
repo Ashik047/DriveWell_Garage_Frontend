@@ -48,6 +48,7 @@ const DashboardStaffs = () => {
         queryKey: ["Staff"],
         queryFn: () => getAllStaffsApi({ axiosWithToken }),
         select: response => response?.data?.sort((a, b) => (a.fullName.toLowerCase().localeCompare(b.fullName.toLowerCase()))),
+        enabled: !!auth?.accessToken
     }
     );
 
@@ -85,7 +86,7 @@ const DashboardStaffs = () => {
                     }
                 }
             } catch (err) {
-                toast.error(err.response.data.Message);
+                toast.error(err?.response?.data?.Message);
             }
             handleCloseEditModal();
         }
@@ -108,7 +109,7 @@ const DashboardStaffs = () => {
                 toast.success(result.data.Message);
             }
         } catch (err) {
-            toast.error(err.response.data.Message);
+            toast.error(err?.response?.data?.Message);
         }
     };
 
