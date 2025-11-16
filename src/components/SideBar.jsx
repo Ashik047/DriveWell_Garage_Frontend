@@ -10,7 +10,8 @@ import {
     MapIcon,
     CarIcon,
     StarIcon,
-    UsersIcon
+    UsersIcon,
+    ChartBarIcon
 } from 'lucide-react'
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthProvider";
@@ -81,6 +82,7 @@ const SideBar = ({ setSidebarStatus }) => {
             {
                 activeSidebarTabs?.map((tab) => {
                     return <button key={tab.name} className="text-black block font-medium text-xl p-4 cursor-pointer w-full text-left" style={activeTab === tab.id ? { backgroundColor: "#DBEAFE", color: "#F97316", borderLeft: "3px solid #F97316" } : {}} onClick={() => handleTabChange(tab)}>
+                        {tab.name === "Overview" && <ChartBarIcon size={28} className="inline me-2 transform -translate-y-1" />}
                         {tab.name === "Bookings" && <CalendarIcon size={28} className="inline me-2 transform -translate-y-1" />}
                         {tab.name === "Customers" && <UserIcon size={28} className="inline me-2 transform -translate-y-1" />}
                         {tab.name === "Staffs" && <UsersIcon size={28} className="inline me-2 transform -translate-y-1" />}

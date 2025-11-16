@@ -12,6 +12,8 @@ import { Commet } from 'react-loading-indicators'
 import { toast, ToastContainer } from 'react-toastify'
 import AuthContext from '../context/AuthProvider'
 import { useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
 
 const CustomerVehicle = () => {
     const [modalStatus, setModalStatus] = useState(false);
@@ -26,6 +28,14 @@ const CustomerVehicle = () => {
     });
 
     const { auth } = useContext(AuthContext);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (auth?.role && auth?.role !== "Customer") {
+            navigate("/");
+        }
+    }, [auth?.role]);
 
     const queryClient = useQueryClient();
     const axiosWithToken = useAxiosWithToken();

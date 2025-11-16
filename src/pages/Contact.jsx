@@ -12,6 +12,7 @@ import { faComment, faEnvelope, faPhone } from "@fortawesome/free-solid-svg-icon
 import { handleChange } from "../helpers/formHelper";
 import { getAllBranchesApi } from "../api/branchApi";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 const Contact = () => {
 
@@ -30,24 +31,34 @@ const Contact = () => {
     }
     );
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     return (
         <main className="grow px-4 py-6 rounded-md" id="Contact">
             <h2 className="mt-4 text-center font-bold text-4xl">Contact Us</h2>
             <p className="text-center text-lg mt-3 text-dim-black">Have questions or need assistance? Reach out to our team or visit one of our locations.</p>
             <section id="branches">
                 <h3 className="mt-18 font-bold text-3xl">Our Branches</h3>
-                <ClusterMap allBranches={allBranches} />
+                {
+                    allBranches?.length > 0 ?
+                        <ClusterMap allBranches={allBranches} /> :
+                        <p className='mt-3 text-dim-black'>No branches available yet.</p>
+                }
             </section>
-            <section>
-                <h3 className="mt-18 font-bold text-3xl">Find a Location</h3>
-                <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(320px,1fr))] xl:grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-8 mt-6">
-                    {
-                        allBranches?.map((branch) => (
-                            <Branch key={branch?._id} branch={branch} />
-                        ))
-                    }
-                </div>
-            </section>
+            {
+                allBranches?.length > 0 &&
+                <section>
+                    <h3 className="mt-18 font-bold text-3xl">Find a Location</h3>
+                    <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(320px,1fr))] xl:grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-8 mt-6">
+                        {
+                            allBranches?.map((branch) => (
+                                <Branch key={branch?._id} branch={branch} />
+                            ))
+                        }
+                    </div>
+                </section>}
             <section>
                 <h3 className="mt-18 font-bold text-3xl">About DriveWell Garage</h3>
                 <p className="mt-1 text-dim-black text-md">Providing quality auto repair services since 2005.</p>

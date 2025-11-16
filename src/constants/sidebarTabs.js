@@ -58,16 +58,23 @@
 //     },
 // ]
 export const sidebarTabs = [
+
     {
         id: "bookings",
         name: "Bookings",
         link: "/bookings"
+    },
+    {
+        id: "overview",
+        name: "Overview",
+        link: "/overview"
     },
     // {
     //     id: "customers",
     //     name: "Customers",
     //     link: "/customers"
     // },
+
     {
         id: "staffs",
         name: "Staffs",

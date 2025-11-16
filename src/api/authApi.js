@@ -22,3 +22,6 @@ export const refreshTokenApi = async () => {
         return err;
     }
 }
+export const forgotPasswordApi = async (reqBody) => {
+    return await axios.post("/forgot-password", reqBody);
+}

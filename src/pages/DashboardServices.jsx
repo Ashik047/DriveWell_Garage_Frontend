@@ -11,6 +11,8 @@ import { Commet } from 'react-loading-indicators'
 import { toast, ToastContainer } from 'react-toastify'
 import Service from '../components/Service'
 import AuthContext from '../context/AuthProvider';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const DashboardServices = () => {
     const [modalStatus, setModalStatus] = useState(false);
@@ -28,6 +30,14 @@ const DashboardServices = () => {
     });
 
     const { auth } = useContext(AuthContext);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (auth?.role && auth?.role === "Customer") {
+            navigate("/");
+        }
+    }, [auth?.role]);
 
     const queryClient = useQueryClient();
     const axiosWithToken = useAxiosWithToken();
@@ -138,9 +148,14 @@ const DashboardServices = () => {
             </div>
             <div className="mt-13 grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(320px,1fr))] xl:grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-8 ">
                 {
-                    allServices?.map(service => {
-                        return <Service key={service?._id} service={service} handleEditService={handleEditService} handleServicesDelete={handleServicesDelete} deletePending={deleteServiceMutation.isPending} role={auth?.role} />
-                    })
+                    allServices?.length > 0 ?
+                        allServices?.map(service => {
+                            return <Service key={service?._id} service={service} handleEditService={handleEditService} handleServicesDelete={handleServicesDelete} deletePending={deleteServiceMutation.isPending} role={auth?.role} />
+                        }) :
+                        <>
+                            <p className='-mt-3 text-dim-black'>No services available yet.</p>
+                            <img src="/empty.gif" alt="Empty" className='w-[300px] block mx-auto' />
+                        </>
                 }
             </div>
 

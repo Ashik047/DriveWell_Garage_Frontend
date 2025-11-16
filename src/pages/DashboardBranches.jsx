@@ -12,6 +12,8 @@ import useAxiosWithToken from '../hooks/useAxiosWithToken'
 import { Commet } from "react-loading-indicators";
 import { useContext } from 'react'
 import AuthContext from '../context/AuthProvider'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const DashboardBranches = () => {
     const [modalStatus, setModalStatus] = useState(false);
@@ -30,6 +32,14 @@ const DashboardBranches = () => {
     });
 
     const { auth } = useContext(AuthContext);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (auth?.role && auth?.role === "Customer") {
+            navigate("/");
+        }
+    }, [auth?.role]);
 
     const queryClient = useQueryClient();
     const axiosWithToken = useAxiosWithToken();
@@ -142,21 +152,26 @@ const DashboardBranches = () => {
             </div>
             <div className='flex flex-col w-full gap-8 mt-8'>
                 {
-                    allBranches?.map((branch) => (
-                        <div key={branch._id} className='w-full shadow-[5px_5px_10px_1px_#cdcdcd] p-8 text-dim-black flex gap-4 flex-col sm:flex-row'>
-                            <img src={branch?.image?.url} alt={`${branch?.branchName} branch photo`} className='block w-full sm:w-[200px] aspect-3/2 object-cover object-center' />
-                            <div className='flex flex-col w-full'>
-                                <div className='flex justify-between'>
-                                    <h5 className='font-bold text-lg text-black mb-3'>{branch?.branchName}</h5>
-                                    {auth?.role === "Manager" && <button className='disabled:opacity-50 disabled:hover:opacity-50 cursor-pointer disabled:cursor-not-allowed' onClick={() => handleBranchesDelete(branch?._id)} disabled={deleteBranchMutation.isPending} aria-label='Delete branch'><Trash size={15} className='text-red-600' /></button>}
+                    allBranches?.length > 0 ?
+                        allBranches?.map((branch) => (
+                            <div key={branch._id} className='w-full shadow-[5px_5px_10px_1px_#cdcdcd] p-8 text-dim-black flex gap-4 flex-col sm:flex-row'>
+                                <img src={branch?.image?.url} alt={`${branch?.branchName} branch photo`} className='block w-full sm:w-[200px] aspect-3/2 object-cover object-center' />
+                                <div className='flex flex-col w-full'>
+                                    <div className='flex justify-between'>
+                                        <h5 className='font-bold text-lg text-black mb-3'>{branch?.branchName}</h5>
+                                        {auth?.role === "Manager" && <button className='disabled:opacity-50 disabled:hover:opacity-50 cursor-pointer disabled:cursor-not-allowed' onClick={() => handleBranchesDelete(branch?._id)} disabled={deleteBranchMutation.isPending} aria-label='Delete branch'><Trash size={15} className='text-red-600' /></button>}
+                                    </div>
+                                    <p>{branch?.location}</p>
+                                    <p>{branch?.phone}</p>
+                                    <p className='mt-3'>Staff: {branch?.staffs?.length}</p>
+                                    {(auth?.role === "Manager") && <button className='cursor-pointer hover:opacity-75 text-blue-600 font-bold rounded-md flex items-center ms-auto text-sm' aria-label='Edit branch' onClick={() => handleEditBranch(branch)}><SquarePen size={15} className='inline' /></button>}
                                 </div>
-                                <p>{branch?.location}</p>
-                                <p>{branch?.phone}</p>
-                                <p className='mt-3'>Staff: {branch?.staffs?.length}</p>
-                                {(auth?.role === "Manager") && <button className='cursor-pointer hover:opacity-75 text-blue-600 font-bold rounded-md flex items-center ms-auto text-sm' aria-label='Edit branch' onClick={() => handleEditBranch(branch)}><SquarePen size={15} className='inline' /></button>}
                             </div>
-                        </div>
-                    ))
+                        )) :
+                        <>
+                            <p className='-mt-3 text-dim-black'>No branches available yet.</p>
+                            <img src="/empty.gif" alt="Empty" className='w-[300px] block mx-auto' />
+                        </>
                 }
             </div>
 

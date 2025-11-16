@@ -8,8 +8,14 @@ import { Clock4, MapPin, Phone } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 import { getAllServicesApi } from "../api/serviceApi"
 import { getAllBranchesApi } from "../api/branchApi"
+import Loader from "../components/Loader"
+import Error from "../components/Error"
+import { useContext } from "react"
+import AuthContext from "../context/AuthProvider"
 
 const Home = () => {
+
+    const { auth } = useContext(AuthContext);
 
     const { data: allServices, isLoading: allServicesLoading, isError: allServicesIsError, error: allServicesError } = useQuery({
         queryKey: ['Service'],
@@ -25,6 +31,19 @@ const Home = () => {
     }
     );
 
+    if (allServicesLoading || allBranchesLoading) {
+        return (
+            <Loader />
+        )
+    }
+    if (allServicesError || allBranchesError) {
+        return (
+            <Error />
+        )
+    }
+
+
+
     return (
         <main className="grow">
             <section className="bg-box block grid-cols-2 md:grid gap-4 px-4 py-10 text-white">
@@ -32,7 +51,7 @@ const Home = () => {
                     <h1 className="font-extrabold text-5xl">Keeping Your Ride in <br className="hidden xs:block md:hidden lg:block" />Top Shape</h1>
                     <p className="mt-8 md:mt-4 lg:mt-8 text-dim text-xl">Professional auto repair and maintenance <br className="hidden xs:block md:hidden lg:block" />services you can trust.</p>
                     <div className="flex">
-                        <Link to={"/booking"} className="bg-white text-black font-semibold px-6 py-2 hover:opacity-75 mt-8 md:mt-4 lg:mt-8 rounded-md me-3 w-fit" >Book Now</Link>
+                        {auth?.role === "Customer" && <Link to={"/booking"} className="bg-white text-black font-semibold px-6 py-2 hover:opacity-75 mt-8 md:mt-4 lg:mt-8 rounded-md me-3 w-fit" >Book Now</Link>}
                         <Link to={"/services"} className="bg-accent text-white font-semibold px-6 py-2 hover:opacity-75 mt-8 md:mt-4 lg:mt-8 rounded-md me-3 w-fit">Our Services</Link>
                     </div>
                 </div>
@@ -42,10 +61,11 @@ const Home = () => {
                 <h2 className="mt-4 text-center font-bold text-4xl">Our Services</h2>
                 <p className="text-center text-lg mt-3 text-dim-black">Professional auto repair services for all makes and models</p>
                 <div className="mt-8 grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-8">
-                    {
+                    {allServices?.length > 0 ?
                         allServices?.filter((service, index) => index < 5).map(service => {
                             return <Service key={service?._id} service={service} />
-                        })
+                        }) :
+                        <p className='mt-3 text-dim-black text-center'>No services available yet.</p>
                     }
                 </div>
                 <Link to={"/services"} className="mt-12 bg-accent px-4 py-3 rounded-md mx-auto hover:opacity-75 font-semibold w-fit text-white block">View All Services <FontAwesomeIcon icon={faArrowRight} /></Link>
@@ -76,7 +96,11 @@ const Home = () => {
             <section className="px-4 py-10">
                 <h2 className="mt-4 text-center font-bold text-4xl">Our Branches</h2>
                 <p className="text-center text-lg mt-3 text-dim-black">Find the DriveWell Garage location nearest to you</p>
-                <ClusterMap allBranches={allBranches} />
+                {
+                    allBranches?.length > 0 ?
+                        <ClusterMap allBranches={allBranches} /> :
+                        <p className='mt-10 text-dim-black text-center'>No branches available yet.</p>
+                }
                 <Link to={"/contact"} className="mt-12 w-fit bg-accent px-4 py-3 rounded-md mx-auto hover:opacity-75 font-semibold text-white block">View All Branches <FontAwesomeIcon icon={faArrowRight} /></Link>
             </section>
         </main>

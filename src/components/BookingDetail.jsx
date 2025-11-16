@@ -8,12 +8,10 @@ import FormControl from '@mui/material/FormControl';
 import {
     CalendarIcon,
     CarIcon,
-    Clock4,
     MessageSquareIcon,
     Trash
 } from 'lucide-react'
 import { useState } from 'react';
-import { workerNotes } from '../constants/workerNotes';
 import ModalBackground from './ModalBackground';
 import { format } from "date-fns";
 import { useContext } from 'react';
@@ -22,11 +20,12 @@ import { Commet } from 'react-loading-indicators';
 import { toast, ToastContainer } from 'react-toastify';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useAxiosWithToken from '../hooks/useAxiosWithToken';
-import { deleteBookingApi, editBookingStatusApi } from '../api/bookingApi';
+import { addBookingNotesApi, deleteBookingApi, deleteBookingNoteApi, editBookingStatusApi } from '../api/bookingApi';
 
 
 const BookingDetail = ({ bookingDetails }) => {
     const [detailsStatus, setDetailsStatus] = useState(false);
+    const [noteSubmitStatus, setNoteSubmitStatus] = useState(false);
     const [activeTab, setActiveTab] = useState("bookingDetails")
     const [workingNotes, setWorkingNotes] = useState("");
     const [workingStatus, setWorkingStatus] = useState(bookingDetails?.status);
@@ -42,6 +41,18 @@ const BookingDetail = ({ bookingDetails }) => {
         }
     });
 
+    const addBookingNotesMutation = useMutation(addBookingNotesApi, {
+        onSuccess: () => {
+            queryClient.invalidateQueries(["Booking"]);
+        }
+    });
+
+    const deleteBookingNoteMutation = useMutation(deleteBookingNoteApi, {
+        onSuccess: () => {
+            queryClient.invalidateQueries(["Booking"]);
+        }
+    });
+
     const deleteBookingMutation = useMutation(deleteBookingApi, {
         onSuccess: () => {
             queryClient.invalidateQueries(["Booking"]);
@@ -50,18 +61,39 @@ const BookingDetail = ({ bookingDetails }) => {
 
 
     const handleSubmitNote = async () => {
-        /* api */
-
-
-        setWorkingNotes("");
+        setNoteSubmitStatus(true);
+        if (workingNotes) {
+            try {
+                const result = await addBookingNotesMutation.mutateAsync({ axiosWithToken, reqBody: { note: workingNotes }, id: bookingDetails._id });
+                if (result.status === 200) {
+                    toast.success(result.data.Message);
+                }
+                setNoteSubmitStatus(false);
+            } catch (err) {
+                setNoteSubmitStatus(false);
+                toast.error(err.response.data.Message);
+            }
+            setWorkingNotes("");
+        }
     };
-    const handleNoteClose = () => {
+
+    const handleCloseModal = () => {
         setWorkingNotes("");
+        setNoteSubmitStatus(false);
+        setWorkingStatus(bookingDetails?.status);
+        setDetailsStatus(false);
     };
 
-    const handleNoteDelete = async () => {
-        /* api */
-
+    const handleNoteDelete = async (noteId) => {
+        try {
+            const result = await deleteBookingNoteMutation.mutateAsync({ axiosWithToken, id: bookingDetails._id, noteId });
+            if (result.status === 200) {
+                toast.success(result.data.Message);
+            }
+        } catch (err) {
+            toast.error(err.response.data.Message);
+        }
+        setWorkingNotes("");
     };
 
     const handleCancelBookingStatus = () => {
@@ -78,8 +110,10 @@ const BookingDetail = ({ bookingDetails }) => {
                 toast.success(result.data.Message);
             }
         } catch (err) {
+            setWorkingStatus(bookingDetails?.status);
             toast.error(err.response.data.Message);
         }
+        setWorkingNotes("");
     };
     const handleBookingDelete = async () => {
         try {
@@ -91,7 +125,6 @@ const BookingDetail = ({ bookingDetails }) => {
             toast.error(err.response.data.Message);
         }
     };
-    console.log(bookingDetails);
 
 
     return (
@@ -120,14 +153,14 @@ const BookingDetail = ({ bookingDetails }) => {
             {/* detail modal */}
             {
                 detailsStatus &&
-                <div className="fixed bg-white top-[10%] left-[50%] transform -translate-x-[50%] z-20 text-left sm:w-[500px] xs:w-[400px] w-[300px] rounded-lg shadow-[5px_5px_10px_1px_gray] max-h-[80vh]">
-                    <button className='hover:text-accent absolute -right-8 -top-8 cursor-pointer disabled:hover:text-dim-black disabled:text-dim-black disabled:cursor-not-allowed' disabled={editBookingStatusMutation.isPending} onClick={() => setDetailsStatus(false)}><FontAwesomeIcon icon={faXmark} className='text-xl' /></button>
+                <div className="fixed bg-white top-[15%] left-[50%] transform -translate-x-[50%] z-20 text-left sm:w-[500px] xs:w-[400px] w-[300px] rounded-lg shadow-[5px_5px_10px_1px_gray]">
+                    <button className='hover:text-accent absolute -right-8 -top-8 cursor-pointer disabled:hover:text-dim-black disabled:text-dim-black disabled:cursor-not-allowed' disabled={editBookingStatusMutation.isPending || addBookingNotesMutation.isPending || deleteBookingNoteMutation.isPending} onClick={handleCloseModal}><FontAwesomeIcon icon={faXmark} className='text-xl' /></button>
                     {(auth?.role === "Manager" || auth?.role === "Staff") && <div className='w-full flex justify-between items center'>
-                        <button disabled={editBookingStatusMutation.isPending} className='disabled:cursor-not-allowed w-full px-4 py-4 font-semibold rounded-tl-lg' style={activeTab === "bookingDetails" ? { color: "#F97316", backgroundColor: "white" } : { backgroundColor: "#D1D5DB", color: "black" }} onClick={() => setActiveTab("bookingDetails")}>Booking Details</button>
-                        <button disabled={editBookingStatusMutation.isPending} className='disabled:cursor-not-allowed w-full px-4 py-4 font-semibold' style={activeTab === "notes" ? { color: "#F97316", backgroundColor: "white" } : { backgroundColor: "#D1D5DB", color: "black" }} onClick={() => setActiveTab("notes")}>Booking Details</button>
-                        <button disabled={editBookingStatusMutation.isPending} className='disabled:cursor-not-allowed w-full px-4 py-4 font-semibold rounded-tr-lg' style={activeTab === "bookingStatus" ? { color: "#F97316", backgroundColor: "white" } : { backgroundColor: "#D1D5DB", color: "black" }} onClick={() => setActiveTab("bookingStatus")}>Booking Details</button>
+                        <button disabled={editBookingStatusMutation.isPending || addBookingNotesMutation.isPending || deleteBookingNoteMutation.isPending} className='disabled:cursor-not-allowed w-full px-4 py-4 font-semibold rounded-tl-lg' style={activeTab === "bookingDetails" ? { color: "#F97316", backgroundColor: "white" } : { backgroundColor: "#D1D5DB", color: "black" }} onClick={() => setActiveTab("bookingDetails")}>Booking Details</button>
+                        <button disabled={editBookingStatusMutation.isPending || addBookingNotesMutation.isPending || deleteBookingNoteMutation.isPending} className='disabled:cursor-not-allowed w-full px-4 py-4 font-semibold' style={activeTab === "notes" ? { color: "#F97316", backgroundColor: "white" } : { backgroundColor: "#D1D5DB", color: "black" }} onClick={() => setActiveTab("notes")}>Booking Details</button>
+                        <button disabled={editBookingStatusMutation.isPending || addBookingNotesMutation.isPending || deleteBookingNoteMutation.isPending} className='disabled:cursor-not-allowed w-full px-4 py-4 font-semibold rounded-tr-lg' style={activeTab === "bookingStatus" ? { color: "#F97316", backgroundColor: "white" } : { backgroundColor: "#D1D5DB", color: "black" }} onClick={() => setActiveTab("bookingStatus")}>Booking Details</button>
                     </div>}
-                    {activeTab === "bookingDetails" && <div className="px-4 pt-10 pb-15">
+                    {activeTab === "bookingDetails" && <div className="px-4 pt-10 pb-15 max-h-[60vh] overflow-y-auto">
                         <div className="flex items-center justify-between">
                             <h5 className='font-bold text-2xl'>Booking Details</h5>
                         </div>
@@ -142,31 +175,32 @@ const BookingDetail = ({ bookingDetails }) => {
                         <p className='font-medium mt-6'>Your Description</p>
                         <p className='text-dim-black'>{bookingDetails?.description ? bookingDetails?.description : "No description provided."}</p>
                     </div>}
-                    {activeTab === "notes" && <div className="px-4 py-6">
+                    {activeTab === "notes" && <div className="px-4 py-6 max-h-[60vh] overflow-y-auto">
                         <div className="flex items-center justify-between">
                             <h5 className='font-bold text-2xl'>Notes</h5>
                         </div>
 
                         <hr className='mt-3 text-dim-black opacity-30 mb-10' />
-                        <TextField id="workingNotes" name='workingNotes' variant="outlined" type="text" className='w-full mt-6' label="Notes" onChange={(e) => setWorkingNotes(e.target.value)} value={workingNotes} required />
-                        <button type="button" className='px-4 py-2 mt-4 block ms-auto bg-accent cursor-pointer text-white font-bold rounded-md hover:opacity-75' onClick={handleSubmitNote}>Add Note</button>
-                        <div className='flex flex-col gap-8 mt-10 max-h-[300px] overflow-y-scroll'>
+                        <TextField id="workingNotes" name='workingNotes' variant="outlined" type="text" className='w-full mt-6' label="Notes" onChange={(e) => setWorkingNotes(e.target.value)} value={workingNotes} />
+                        <p className='text-red-700 text-sm ms-1 mb-2' style={{ visibility: (!noteSubmitStatus || workingNotes) && "hidden" }}>Note is required</p>
+                        <button type="button" className='px-4 py-2 mt-4 block ms-auto bg-accent cursor-pointer text-white font-bold rounded-md hover:opacity-75 disabled:hover:text-dim-black disabled:text-dim-black disabled:cursor-not-allowed' disabled={addBookingNotesMutation.isPending || deleteBookingNoteMutation.isPending} onClick={handleSubmitNote}>Add Note</button>
+                        <div className='flex flex-col gap-8 mt-10'>
                             {
-                                workerNotes?.map((note) => (
-                                    <div key={note.id} className='shadow-[5px_5px_10px_1px_#cdcdcd] p-8 flex justify-between gap-2'>
+                                [...bookingDetails?.notes || []].reverse().map((note) => (
+                                    <div key={note._id} className='shadow-[5px_5px_10px_1px_#cdcdcd] p-8 flex justify-between gap-2'>
                                         <div>
-                                            <p className='font-bold text-lg'><MessageSquareIcon size={16} className='inline me-2' /> {note.name}</p>
-                                            <p className='text-sm text-dim-black mt-2'>{note.date} - {note.time}</p>
+                                            <p className='font-bold text-lg'><MessageSquareIcon size={16} className='inline me-2' /> {note.staffName}</p>
+                                            <p className='text-sm text-dim-black mt-2'>{note.date}</p>
                                             <p className='mt-2 text-dim-black'>{note.note}</p>
                                         </div>
-                                        <button className='cursor-pointer hover:opacity-75 text-red-600 mb-auto' onClick={handleNoteDelete}><Trash size={15} /></button>
+                                        <button className='cursor-pointer hover:opacity-75 text-red-600 mb-auto disabled:hover:text-dim-black disabled:text-dim-black disabled:cursor-not-allowed' disabled={deleteBookingNoteMutation.isPending} onClick={() => handleNoteDelete(note._id)}><Trash size={15} /></button>
 
                                     </div>
                                 ))
                             }
                         </div>
                     </div>}
-                    {activeTab === "bookingStatus" && <div className="px-4 pt-10 pb-15">
+                    {activeTab === "bookingStatus" && <div className="px-4 pt-10 pb-15 max-h-[60vh] overflow-y-auto">
                         <div className="flex items-center justify-between">
                             <h5 className='font-bold text-2xl'>Update Booking Status</h5>
                         </div>
@@ -200,7 +234,7 @@ const BookingDetail = ({ bookingDetails }) => {
                     </div>}
                 </div>
             }
-            {(editBookingStatusMutation.isPending || deleteBookingMutation.isPending) && <>
+            {(editBookingStatusMutation.isPending || deleteBookingMutation.isPending || addBookingNotesMutation.isPending || deleteBookingNoteMutation.isPending) && <>
                 <div className='fixed left-[50%] top-[50%] transform -translate-[50%] z-14'><Commet color="#F97316" size="medium" text="" textColor="" /></div>
             </>
             }

@@ -147,9 +147,15 @@ const DashReviews = () => {
             </div>
             <div className='flex flex-col gap-8 mt-8'>
                 {
-                    allFeedbacks?.map((feedback) => (
-                        <Review key={feedback?._id} feedback={feedback} role={auth?.role} deletePending={deleteFeedbackMutation.isPending} handleEditFeedback={handleEditFeedback} handleFeedbackDelete={handleFeedbackDelete} handleFeedbackPublishStatus={handleFeedbackPublishStatus} statusPending={editFeedbackStatusMutation.isPending} />
-                    ))
+                    allFeedbacks?.length > 0 ?
+                        allFeedbacks?.map((feedback) => (
+                            <Review key={feedback?._id} feedback={feedback} role={auth?.role} deletePending={deleteFeedbackMutation.isPending} handleEditFeedback={handleEditFeedback} handleFeedbackDelete={handleFeedbackDelete} handleFeedbackPublishStatus={handleFeedbackPublishStatus} statusPending={editFeedbackStatusMutation.isPending} />
+                        )) :
+                        <>
+                            <p className='-mt-3 text-dim-black'>No feedbacks available yet.</p>
+                            <img src="/empty.gif" alt="Empty" className='w-[300px] block mx-auto' />
+                        </>
+
                 }
             </div>
 

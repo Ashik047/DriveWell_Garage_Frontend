@@ -17,3 +17,11 @@ export const deleteBookingApi = async ({ axiosWithToken, id }) => {
 export const getUnavailableDatesApi = async ({ axiosWithToken, branch, service }) => {
     return await axiosWithToken.get(`/booking/unavailable?branch=${branch}&service=${service}`);
 };
+
+export const addBookingNotesApi = async ({ axiosWithToken, reqBody, id }) => {
+    return await axiosWithToken.patch(`/booking/${id}/notes`, reqBody);
+};
+
+export const deleteBookingNoteApi = async ({ axiosWithToken, id, noteId }) => {
+    return await axiosWithToken.patch(`/booking/${id}/notes/${noteId}`);
+};

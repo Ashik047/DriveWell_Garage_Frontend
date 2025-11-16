@@ -32,23 +32,28 @@ const Reviews = () => {
         <main className="grow px-4 py-6">
             <h2 className="mt-4 text-center font-bold text-4xl">Customer Reviews</h2>
             <p className="text-center text-lg mt-3 text-dim-black">See what our customers are saying about their experience with DriveWell Garage</p>
-            <div className='flex justify-center gap-2 mt-6'>
-                <Rating name="read-only" value={avgRating} precision={0.5} readOnly />
-                <p className='font-semibold'><span>{avgRating}</span> out of 5</p>
-                {
-                    reviews?.length ?
-                        <p className='text-dim-black'>Based on <span>{reviews?.length}</span> reviews</p> :
-                        <p className='text-dim-black'>No reviews available</p>
-                }
-            </div>
-            <div className='flex flex-col gap-8 mt-6'>
-                {
-                    reviews?.filter((feedback) => feedback.status === true)?.map(feedback => (
-                        <Review key={feedback._id} feedback={feedback} />
-                    ))
-                }
+            {
+                reviews?.length > 0 ?
+                    <>
+                        <div className='flex justify-center gap-2 mt-6'>
+                            <Rating name="read-only" value={avgRating} precision={0.5} readOnly />
+                            <p className='font-semibold'><span>{avgRating}</span> out of 5</p>
+                            <p className='text-dim-black'>Based on <span>{reviews?.length}</span> reviews</p>
+                        </div>
+                        <div className='flex flex-col gap-8 mt-6'>
+                            {
+                                reviews?.filter((feedback) => feedback.status === true)?.map(feedback => (
+                                    <Review key={feedback._id} feedback={feedback} />
+                                ))
+                            }
 
-            </div>
+                        </div>
+                    </> :
+                    <>
+                        <p className='mt-10 text-center text-dim-black'>No feedbacks available yet.</p>
+                        <img src="/empty.gif" alt="Empty" className='w-[300px] block mx-auto' />
+                    </>
+            }
             <div className="bg-box mt-8 rounded-md shadow flex-col flex md:flex-row h-[200px] justify-center md:justify-start md:items-center px-10 py-6 gap-8">
                 <div className="text-white">
                     <h4 className="font-bold text-xl">Happy with our service?</h4>

@@ -47,9 +47,14 @@ const DashBookings = () => {
 
             <div className='flex flex-col gap-8 mt-8'>
                 {
-                    bookingData?.filter(booking => booking.status === activeStatus)?.map((booking) => (
-                        <BookingDetail key={booking?._id} bookingDetails={booking} />
-                    ))
+                    bookingData?.filter(booking => booking.status === activeStatus)?.length > 0 ?
+                        bookingData?.filter(booking => booking.status === activeStatus)?.map((booking) => (
+                            <BookingDetail key={booking?._id} bookingDetails={booking} />
+                        )) :
+                        <>
+                            <p className='-mt-1 text-dim-black'>{`No bookings with status "${activeStatus}" available yet.`}</p>
+                            <img src="/empty.gif" alt="Empty" className='w-[300px] block mx-auto' />
+                        </>
                 }
             </div>
         </section>

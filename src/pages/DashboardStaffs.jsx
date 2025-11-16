@@ -17,6 +17,8 @@ import { Commet } from 'react-loading-indicators'
 import useAxiosWithToken from '../hooks/useAxiosWithToken'
 import { useContext } from 'react'
 import AuthContext from '../context/AuthProvider'
+import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
 
 const DashboardStaffs = () => {
     const [modalStatus, setModalStatus] = useState(false);
@@ -33,6 +35,14 @@ const DashboardStaffs = () => {
     });
 
     const { auth } = useContext(AuthContext);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (auth?.role && auth?.role === "Customer") {
+            navigate("/");
+        }
+    }, [auth?.role]);
 
     const queryClient = useQueryClient();
     const axiosWithToken = useAxiosWithToken();
@@ -121,30 +131,37 @@ const DashboardStaffs = () => {
                 </div>
                 {(auth?.role === "Manager") && <button className='px-4 py-2 bg-accent cursor-pointer text-white font-bold rounded-md hover:opacity-75' onClick={() => handleAdd(setModalStatus, setModalType)}><FontAwesomeIcon icon={faPlus} />  Add&nbsp;Staff</button>}
             </div>
-            <table className='table-auto border-separate border-spacing-3  w-full text-center mt-10 shadow-[5px_5px_10px_1px_#cdcdcd]'>
-                <thead>
-                    <tr>
-                        <th className='p-4'>Name</th>
-                        <th className='p-4 hidden lg:block'>Email</th>
-                        <th className='p-4'>Role</th>
-                        <th className='p-4 hidden xs:block'>Branch</th>
-                        {(auth?.role === "Manager") && <th className='p-4'></th>}
-                    </tr>
-                </thead>
-                <tbody className='text-dim-black'>
-                    {
-                        allStaffs?.map((staff) => {
-                            return <tr key={staff._id} >
-                                <td className='p-4'>{staff.fullName}</td>
-                                <td className='p-4 hidden lg:block'>{staff.email}</td>
-                                <td className='p-4'>{staff.role}</td>
-                                <td className='p-4 hidden xs:block'>{staff.branch}</td>
-                                {(auth?.role === "Manager") && <td className='p-4'><button className='cursor-pointer' aria-label='Edit staff details' onClick={() => handleEditStaff(staff)}><SquarePen size={15} className='text-blue-700 me-1' /></button><button aria-label='Delete staff details' className='cursor-pointer disabled:opacity-50 disabled:hover:opacity-50 disabled:cursor-not-allowed' disabled={deleteStaffMutation.isPending} onClick={() => handleStaffsDelete(staff._id)}><Trash size={15} className='text-red-600' /></button></td>}
+            {
+                allStaffs?.length > 0 ?
+                    <table className='table-auto border-separate border-spacing-3  w-full text-center mt-10 shadow-[5px_5px_10px_1px_#cdcdcd]'>
+                        <thead>
+                            <tr>
+                                <th className='p-4'>Name</th>
+                                <th className='p-4 hidden lg:block'>Email</th>
+                                <th className='p-4'>Role</th>
+                                <th className='p-4 hidden xs:block'>Branch</th>
+                                {(auth?.role === "Manager") && <th className='p-4'></th>}
                             </tr>
-                        })
-                    }
-                </tbody>
-            </table>
+                        </thead>
+                        <tbody className='text-dim-black'>
+                            {
+                                allStaffs?.map((staff) => {
+                                    return <tr key={staff._id} >
+                                        <td className='p-4'>{staff.fullName}</td>
+                                        <td className='p-4 hidden lg:block'>{staff.email}</td>
+                                        <td className='p-4'>{staff.role}</td>
+                                        <td className='p-4 hidden xs:block'>{staff.branch}</td>
+                                        {(auth?.role === "Manager") && <td className='p-4'><button className='cursor-pointer' aria-label='Edit staff details' onClick={() => handleEditStaff(staff)}><SquarePen size={15} className='text-blue-700 me-1' /></button><button aria-label='Delete staff details' className='cursor-pointer disabled:opacity-50 disabled:hover:opacity-50 disabled:cursor-not-allowed' disabled={deleteStaffMutation.isPending} onClick={() => handleStaffsDelete(staff._id)}><Trash size={15} className='text-red-600' /></button></td>}
+                                    </tr>
+                                })
+                            }
+                        </tbody>
+                    </table> :
+                    <>
+                        <p className='mt-6 text-dim-black'>No staffs available yet.</p>
+                        <img src="/empty.gif" alt="Empty" className='w-[300px] block mx-auto' />
+                    </>
+            }
 
 
             {/* modal */}

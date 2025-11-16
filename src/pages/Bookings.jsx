@@ -18,6 +18,8 @@ import { loadStripe } from '@stripe/stripe-js';
 import { useContext } from 'react';
 import AuthContext from '../context/AuthProvider';
 import { Commet } from 'react-loading-indicators';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 
 const Bookings = () => {
@@ -31,7 +33,15 @@ const Bookings = () => {
         description: ""
     });
 
+    const navigate = useNavigate();
+
     const { auth } = useContext(AuthContext);
+
+    useEffect(() => {
+        if (auth?.role && auth?.role !== "Customer") {
+            navigate("/");
+        }
+    }, [auth?.role]);
 
     const STRIPE_KEY = import.meta.env.VITE_STRIPE_KEY;
 
@@ -73,7 +83,12 @@ const Bookings = () => {
         }
     });
 
-    const isUnavailable = (date) => unavailableDates?.includes(date);
+    const isUnavailable = (date) => {
+        if (unavailableDates) {
+            const dateArray = unavailableDates?.data?.map(date => new Date(date).toISOString().split("T")[0])
+            return dateArray?.includes(date);
+        }
+    };
 
     const handleBookingSubmit = async () => {
         setFormSubmitStatus(true);

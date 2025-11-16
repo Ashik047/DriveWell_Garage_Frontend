@@ -29,7 +29,7 @@ const Header = () => {
                         <li className='font-semibold hover:text-accent'><Link to={"/"}>Home</Link></li>
                         <li className='font-semibold hover:text-accent'><Link to={"/services"}>Services</Link></li>
                         <li className='font-semibold hover:text-accent'><Link to={"/reviews"}>Reviews</Link></li>
-                        <li className='font-semibold hover:text-accent'><Link to={"/booking"}>Book Now</Link></li>
+                        {auth?.role === "Customer" && <li className='font-semibold hover:text-accent'><Link to={"/booking"}>Book Now</Link></li>}
                         <li className='font-semibold hover:text-accent'><Link to={"/contact"}>Contact</Link></li>
                         {!auth.accessToken ? <li className='py-1 px-3 font-semibold bg-accent rounded-md hover:opacity-75 p'><Link to={"/login"}><FontAwesomeIcon icon={faUser} className='me-0.5' />Login</Link></li> :
                             <li className='h-[50px]'><Link to={"/dashboard"}>{<img className='w-[50px] aspect-square rounded-[50%]' src={profilePic?.data?.image?.url} alt='Profile picture' />}</Link></li>}
@@ -44,7 +44,7 @@ const Header = () => {
                     <li className='font-semibold py-2'><Link className='hover:text-accent' to={"/"}>Home</Link></li>
                     <li className='font-semibold py-2'><Link className='hover:text-accent' to={"/services"}>Services</Link></li>
                     <li className='font-semibold py-2'><Link className='hover:text-accent' to={"/reviews"}>Reviews</Link></li>
-                    <li className='font-semibold py-2'><Link className='hover:text-accent' to={"/booking"}>Book Now</Link></li>
+                    {auth?.role === "Customer" && <li className='font-semibold py-2'><Link className='hover:text-accent' to={"/booking"}>Book Now</Link></li>}
                     <li className='font-semibold py-2'><Link className='hover:text-accent' to={"/contact"}>Contact</Link></li>
                     {!auth?.accessToken ? <li className='font-semibold py-2'><Link className='hover:text-accent' to={"/login"}>Login</Link></li> :
                         <li className='font-semibold py-2'><Link className='hover:text-accent' to={"/dashboard"}>Dashboard</Link></li>}
