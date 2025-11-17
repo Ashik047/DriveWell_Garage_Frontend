@@ -42,7 +42,7 @@ const Invoice = () => {
     const componentRef = useRef();
 
     const handlePrint = useReactToPrint({
-        contentRef: componentRef,  // Use contentRef instead of content
+        contentRef: componentRef,
         documentTitle: "invoice",
         pageStyle: `
             @page {
@@ -217,7 +217,7 @@ const Invoice = () => {
                             to={"/dashboard/bookings"}
                             className="text-accent hover:opacity-75 font-semibold"
                         >
-                            Back to Invoices
+                            Back to Bookings
                         </Link>
                     </div>
                 </div>

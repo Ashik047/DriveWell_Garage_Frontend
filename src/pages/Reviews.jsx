@@ -7,6 +7,8 @@ import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllFeedbacksApi } from '../api/feedbackApi';
 import { useQuery } from '@tanstack/react-query';
+import Loader from "../components/Loader"
+import Error from "../components/Error"
 
 const Reviews = () => {
 
@@ -27,6 +29,17 @@ const Reviews = () => {
             setAvgRatings(averageRating);
         }
     }, [reviews])
+
+    if (allFeedbacksLoading) {
+        return (
+            <Loader />
+        )
+    }
+    if (allFeedbacksIsError) {
+        return (
+            <Error />
+        )
+    }
 
     return (
         <main className="grow px-4 py-6">

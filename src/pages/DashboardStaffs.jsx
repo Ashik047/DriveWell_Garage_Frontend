@@ -19,6 +19,8 @@ import { useContext } from 'react'
 import AuthContext from '../context/AuthProvider'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
+import Loader from "../components/Loader"
+import Error from "../components/Error"
 
 const DashboardStaffs = () => {
     const [modalStatus, setModalStatus] = useState(false);
@@ -54,13 +56,21 @@ const DashboardStaffs = () => {
     }
     );
 
-    const { data: allStaffs, isLoading: allStaffsLoading, isError: allStaffsIsError, error: allStaffsError } = useQuery({
+    const { data: allStaffsData, isLoading: allStaffsLoading, isError: allStaffsIsError, error: allStaffsError } = useQuery({
         queryKey: ["Staff"],
         queryFn: () => getAllStaffsApi({ axiosWithToken }),
         select: response => response?.data?.sort((a, b) => (a.fullName.toLowerCase().localeCompare(b.fullName.toLowerCase()))),
         enabled: !!auth?.accessToken
     }
     );
+
+    const [allStaffs, setAllStaffs] = useState([]);
+    const [filter, setFilter] = useState("");
+    useEffect(() => {
+        if (allStaffsData?.length > 0) {
+            setAllStaffs(allStaffsData?.filter(staff => staff.fullName.toLowerCase().includes(filter.toLocaleLowerCase())));
+        }
+    }, [allStaffsData, filter]);
 
     const addStaffMutation = useMutation(addStaffApi, {
         onSuccess: () => {
@@ -123,6 +133,17 @@ const DashboardStaffs = () => {
         }
     };
 
+    if (allStaffsLoading || allBranchesLoading) {
+        return (
+            <Loader />
+        )
+    }
+    if (allStaffsIsError || allBranchesIsError) {
+        return (
+            <Error />
+        )
+    }
+
     return (
         <section className='mt-10' id='CustomerVehicle'>
             <div className='flex justify-between items-center'>
@@ -130,6 +151,9 @@ const DashboardStaffs = () => {
                     <h3 className='text-2xl font-bold'>Staffs</h3>
                 </div>
                 {(auth?.role === "Manager") && <button className='px-4 py-2 bg-accent cursor-pointer text-white font-bold rounded-md hover:opacity-75' onClick={() => handleAdd(setModalStatus, setModalType)}><FontAwesomeIcon icon={faPlus} />  Add&nbsp;Staff</button>}
+            </div>
+            <div className='mt-6'>
+                <input type="text" onChange={(e) => setFilter(e.target.value)} value={filter} className='px-4 py-2 rounded-lg border border-dim w-[200px]' placeholder='Search by Name' />
             </div>
             {
                 allStaffs?.length > 0 ?

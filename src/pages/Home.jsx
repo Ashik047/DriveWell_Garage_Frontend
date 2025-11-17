@@ -36,7 +36,7 @@ const Home = () => {
             <Loader />
         )
     }
-    if (allServicesError || allBranchesError) {
+    if (allServicesIsError || allBranchesIsError) {
         return (
             <Error />
         )
@@ -60,7 +60,7 @@ const Home = () => {
             <section className="px-4 py-10">
                 <h2 className="mt-4 text-center font-bold text-4xl">Our Services</h2>
                 <p className="text-center text-lg mt-3 text-dim-black">Professional auto repair services for all makes and models</p>
-                <div className="mt-8 grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-8">
+                <div className="mt-8 grid grid-cols-[repeat(auto-fit,minmax(280px,305px))] justify-center gap-8">
                     {allServices?.length > 0 ?
                         allServices?.filter((service, index) => index < 5).map(service => {
                             return <Service key={service?._id} service={service} />

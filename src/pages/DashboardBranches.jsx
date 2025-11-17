@@ -14,6 +14,8 @@ import { useContext } from 'react'
 import AuthContext from '../context/AuthProvider'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import Loader from "../components/Loader"
+import Error from "../components/Error"
 
 const DashboardBranches = () => {
     const [modalStatus, setModalStatus] = useState(false);
@@ -44,12 +46,20 @@ const DashboardBranches = () => {
     const queryClient = useQueryClient();
     const axiosWithToken = useAxiosWithToken();
 
-    const { data: allBranches, isLoading: allBranchesLoading, isError: allBranchesIsError, error: allBranchesError } = useQuery({
+    const { data: allBranchesData, isLoading: allBranchesLoading, isError: allBranchesIsError, error: allBranchesError } = useQuery({
         queryKey: ['Branch'],
         queryFn: () => getAllBranchesApi(),
         select: response => response?.data?.sort((a, b) => (b._id - a._id)),
     }
     );
+
+    const [allBranches, setAllBranches] = useState([]);
+    const [filter, setFilter] = useState("");
+    useEffect(() => {
+        if (allBranchesData?.length > 0) {
+            setAllBranches(allBranchesData?.filter(branch => branch.branchName.toLowerCase().includes(filter.toLocaleLowerCase())));
+        }
+    }, [allBranchesData, filter]);
 
     const addBranchMutation = useMutation(addBranchApi, {
         onSuccess: () => {
@@ -142,6 +152,17 @@ const DashboardBranches = () => {
         handleCloseEditDetails(branchDetails, setBranchDetails, setModalStatus, setModalType, setFormSubmitStatus);
     };
 
+    if (allBranchesLoading) {
+        return (
+            <Loader />
+        )
+    }
+    if (allBranchesIsError) {
+        return (
+            <Error />
+        )
+    }
+
     return (
         <section className='mt-10' id='CustomerVehicle'>
             <div className='flex justify-between items-center'>
@@ -149,6 +170,9 @@ const DashboardBranches = () => {
                     <h3 className='text-2xl font-bold'>Branch Locations</h3>
                 </div>
                 {(auth?.role === "Manager") && <button className='px-4 py-2 bg-accent cursor-pointer text-white font-bold rounded-md hover:opacity-75' onClick={() => handleAdd(setModalStatus, setModalType)}><FontAwesomeIcon icon={faPlus} /> Add&nbsp;Branch</button>}
+            </div>
+            <div className='mt-6'>
+                <input type="text" onChange={(e) => setFilter(e.target.value)} value={filter} className='px-4 py-2 rounded-lg border border-dim w-[200px]' placeholder='Search by Name' />
             </div>
             <div className='flex flex-col w-full gap-8 mt-8'>
                 {

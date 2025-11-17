@@ -7,6 +7,8 @@ import useAxiosWithToken from '../hooks/useAxiosWithToken';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast, ToastContainer } from 'react-toastify';
 import { Commet } from 'react-loading-indicators';
+import Loader from "../components/Loader"
+import Error from "../components/Error"
 
 const DashProfile = () => {
     const [editDetailsStatus, setEditDetailsStatus] = useState(false);
@@ -134,6 +136,17 @@ const DashProfile = () => {
             setEditPasswordStatus(false);
         }
     };
+
+    if (userDetailsLoading) {
+        return (
+            <Loader />
+        )
+    }
+    if (userDetailsIsError) {
+        return (
+            <Error />
+        )
+    }
 
     return (
         <section className='mt-10' id='CustomerVehicle'>

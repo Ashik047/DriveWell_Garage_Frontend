@@ -19,7 +19,11 @@ import { useContext } from 'react';
 import AuthContext from '../context/AuthProvider';
 import { Commet } from 'react-loading-indicators';
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import Loader from "../components/Loader"
+import Error from "../components/Error"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
 
 const Bookings = () => {
@@ -113,6 +117,32 @@ const Bookings = () => {
         handleReset(bookingData, setBookingData);
         setFormSubmitStatus(false);
     };
+
+    if (allServicesLoading || allBranchesLoading || myVehiclesLoading) {
+        return (
+            <Loader />
+        )
+    }
+    if (allServicesIsError || allBranchesIsError || myVehiclesIsError) {
+        return (
+            <Error />
+        )
+    }
+
+    if (myVehicles?.length <= 0) {
+        return (
+            <>
+                <Header />
+                <main className='grow flex flex-col items-center min-h-[500px] mt-10'>
+                    <img src="/empty.gif" alt="Empty" className='w-[300px] block mx-auto' />
+                    <h2 className='text-center mt-6 text-xl text-dim-black'>Please add a vehicle to continue.</h2>
+                    <Link to={"/dashboard/vehicles"} className='hover:bg-accent text-white px-4 py-1 rounded-lg mt-4 text-2xl bg-black block mx-auto'><FontAwesomeIcon icon={faArrowRight} /></Link>
+                </main>
+                <Footer />
+            </>
+        )
+    }
+
 
     return (
 

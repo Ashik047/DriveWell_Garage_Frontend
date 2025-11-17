@@ -14,6 +14,8 @@ import AuthContext from '../context/AuthProvider'
 import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
+import Loader from "../components/Loader"
+import Error from "../components/Error"
 
 const CustomerVehicle = () => {
     const [modalStatus, setModalStatus] = useState(false);
@@ -40,13 +42,21 @@ const CustomerVehicle = () => {
     const queryClient = useQueryClient();
     const axiosWithToken = useAxiosWithToken();
 
-    const { data: myVehicles, isLoading: myVehiclesLoading, isError: myVehiclesIsError, error: myVehiclesError } = useQuery({
+    const { data: myVehiclesData, isLoading: myVehiclesLoading, isError: myVehiclesIsError, error: myVehiclesError } = useQuery({
         queryKey: ['Vehicle'],
         queryFn: () => getMyVehiclesApi({ axiosWithToken }),
         select: response => response?.data?.sort((a, b) => (a.vehicle.toLowerCase().localeCompare(b.vehicle.toLowerCase()))),
         enabled: !!auth?.accessToken
     }
     );
+
+    const [myVehicles, setMyVehicles] = useState([]);
+    const [filter, setFilter] = useState("");
+    useEffect(() => {
+        if (myVehiclesData?.length > 0) {
+            setMyVehicles(myVehiclesData?.filter(vehicle => vehicle.vehicle.toLowerCase().includes(filter.toLocaleLowerCase())));
+        }
+    }, [myVehiclesData, filter]);
 
     const addVehicleMutation = useMutation(addVehicleApi, {
         onSuccess: () => {
@@ -114,6 +124,17 @@ const CustomerVehicle = () => {
         handleCloseEditDetails(vehicleDetails, setVehicleDetails, setModalStatus, setModalType, setFormSubmitStatus);
     };
 
+    if (myVehiclesLoading) {
+        return (
+            <Loader />
+        )
+    }
+    if (myVehiclesIsError) {
+        return (
+            <Error />
+        )
+    }
+
     return (
         <section className='mt-10' id='CustomerVehicle'>
             <div className='flex justify-between items-center'>
@@ -123,31 +144,40 @@ const CustomerVehicle = () => {
                 </div>
                 <button className='px-4 py-2 bg-accent cursor-pointer text-white font-bold rounded-md hover:opacity-75' onClick={() => handleAdd(setModalStatus, setModalType)}><FontAwesomeIcon icon={faPlus} />Add&nbsp;Vehicle</button>
             </div>
-            <table className='table-auto border-separate border-spacing-3  w-full text-center mt-10 shadow-[5px_5px_10px_1px_#cdcdcd]'>
-                <thead>
-                    <tr>
-                        <th className='p-4'>S. No.</th>
-                        <th className='p-4'>Vehicle</th>
-                        <th className='p-4'>Year</th>
-                        <th className='p-4 hidden md:block'>License Plate</th>
-                        <th className='p-4'></th>
-                    </tr>
-                </thead>
-                <tbody className='text-dim-black'>
-                    {
-                        myVehicles?.map((vehicle, index) => {
-                            return <tr key={vehicle?._id}>
-                                <td className='p-4'>{index + 1}</td>
-                                <td className='p-4'>{vehicle?.vehicle}</td>
-                                <td className='p-4'>{vehicle?.year}</td>
-                                <td className='p-4 hidden md:block'>{vehicle?.plate}</td>
-                                <td className='p-4'><button type='button' aria-label='Edit vehicle' className='cursor-pointer' onClick={() => handleEditFeedback(vehicle)}><SquarePen size={15} className='text-blue-700 me-1' /></button><button type='button' aria-label='Delete vehicle' className='cursor-pointer disabled:opacity-50 disabled:hover:opacity-50 disabled:cursor-not-allowed' onClick={() => handleVehicleDelete(vehicle._id)} disabled={deleteVehicleMutation.isPending}><Trash size={15} className='text-red-600' /></button></td>
-                            </tr>
-                        })
-                    }
-                </tbody>
-            </table>
-
+            <div className='mt-6'>
+                <input type="text" onChange={(e) => setFilter(e.target.value)} value={filter} className='px-4 py-2 rounded-lg border border-dim w-[200px]' placeholder='Search by Name' />
+            </div>
+            {myVehicles?.length > 0 ?
+                <table className='table-auto border-separate border-spacing-3  w-full text-center mt-10 shadow-[5px_5px_10px_1px_#cdcdcd]'>
+                    <thead>
+                        <tr>
+                            <th className='p-4'>S. No.</th>
+                            <th className='p-4'>Vehicle</th>
+                            <th className='p-4'>Year</th>
+                            <th className='p-4 hidden md:block'>License Plate</th>
+                            <th className='p-4'></th>
+                        </tr>
+                    </thead>
+                    <tbody className='text-dim-black'>
+                        {
+                            myVehicles?.map((vehicle, index) => {
+                                return <tr key={vehicle?._id}>
+                                    <td className='p-4'>{index + 1}</td>
+                                    <td className='p-4'>{vehicle?.vehicle}</td>
+                                    <td className='p-4'>{vehicle?.year}</td>
+                                    <td className='p-4 hidden md:block'>{vehicle?.plate}</td>
+                                    <td className='p-4'><button type='button' aria-label='Edit vehicle' className='cursor-pointer' onClick={() => handleEditFeedback(vehicle)}><SquarePen size={15} className='text-blue-700 me-1' /></button><button type='button' aria-label='Delete vehicle' className='cursor-pointer disabled:opacity-50 disabled:hover:opacity-50 disabled:cursor-not-allowed' onClick={() => handleVehicleDelete(vehicle._id)} disabled={deleteVehicleMutation.isPending}><Trash size={15} className='text-red-600' /></button></td>
+                                </tr>
+                            })
+                        }
+                    </tbody>
+                </table>
+                :
+                <>
+                    <p className='mt-8 text-dim-black'>No Vehicles</p>
+                    <img src="/empty.gif" alt="Empty" className='w-[300px] block mx-auto' />
+                </>
+            }
 
             {/* modal */}
             {

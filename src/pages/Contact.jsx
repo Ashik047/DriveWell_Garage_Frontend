@@ -13,6 +13,8 @@ import { handleChange } from "../helpers/formHelper";
 import { getAllBranchesApi } from "../api/branchApi";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
+import Loader from "../components/Loader"
+import Error from "../components/Error"
 
 const Contact = () => {
 
@@ -34,6 +36,17 @@ const Contact = () => {
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
+
+    if (allBranchesLoading) {
+        return (
+            <Loader />
+        )
+    }
+    if (allBranchesIsError) {
+        return (
+            <Error />
+        )
+    }
 
     return (
         <main className="grow px-4 py-6 rounded-md" id="Contact">

@@ -2,23 +2,49 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllServicesApi } from "../api/serviceApi";
 import Service from "../components/Service"
 import { services } from "../constants/carServices"
+import { useEffect } from "react";
+import { useState } from "react";
+import Loader from "../components/Loader"
+import Error from "../components/Error"
 
 const Services = () => {
 
-    const { data: allServices, isLoading: allServicesLoading, isError: allServicesIsError, error: allServicesError } = useQuery({
+    const { data: allServicesData, isLoading: allServicesLoading, isError: allServicesIsError, error: allServicesError } = useQuery({
         queryKey: ['Service'],
         queryFn: () => getAllServicesApi(),
         select: response => response?.data?.sort((a, b) => (b._id - a._id)),
     }
     );
 
+    const [allServices, setAllServices] = useState([]);
+    const [filter, setFilter] = useState("");
+    useEffect(() => {
+        if (allServicesData?.length > 0) {
+            setAllServices(allServicesData?.filter(service => service.serviceName.toLowerCase().includes(filter.toLocaleLowerCase())));
+        }
+    }, [allServicesData, filter]);
+
+    if (allServicesLoading) {
+        return (
+            <Loader />
+        )
+    }
+    if (allServicesIsError) {
+        return (
+            <Error />
+        )
+    }
+
     return (
         <main className="grow px-4 py-6">
             <h2 className="mt-4 text-center font-bold text-4xl">Our Services</h2>
             <p className="text-center text-lg mt-3 text-dim-black">Professional auto repair and maintenance services for all makes and models. Our certified technicians use the latest tools and technology.</p>
+            <div className='mt-6'>
+                <input type="text" onChange={(e) => setFilter(e.target.value)} value={filter} className='px-4 py-2 rounded-lg border border-dim w-[200px]' placeholder='Search by Name' />
+            </div>
             {
                 allServices?.length > 0 ?
-                    <div className="mt-13 grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(320px,1fr))] xl:grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-8">
+                    <div className="mt-13 grid grid-cols-[repeat(auto-fit,minmax(280px,305px))] gap-8 " style={{ justifyContent: filter ? "left" : "center" }}>
                         {
                             allServices?.map(service => {
                                 return <Service key={service?._id} service={service} />

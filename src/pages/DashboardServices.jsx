@@ -13,6 +13,8 @@ import Service from '../components/Service'
 import AuthContext from '../context/AuthProvider';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import Loader from "../components/Loader"
+import Error from "../components/Error"
 
 const DashboardServices = () => {
     const [modalStatus, setModalStatus] = useState(false);
@@ -42,12 +44,20 @@ const DashboardServices = () => {
     const queryClient = useQueryClient();
     const axiosWithToken = useAxiosWithToken();
 
-    const { data: allServices, isLoading: allServicesLoading, isError: allServicesIsError, error: allServicesError } = useQuery({
+    const { data: allServicesData, isLoading: allServicesLoading, isError: allServicesIsError, error: allServicesError } = useQuery({
         queryKey: ['Service'],
         queryFn: () => getAllServicesApi(),
         select: response => response?.data?.sort((a, b) => (b._id - a._id)),
     }
     );
+
+    const [allServices, setAllServices] = useState([]);
+    const [filter, setFilter] = useState("");
+    useEffect(() => {
+        if (allServicesData?.length > 0) {
+            setAllServices(allServicesData?.filter(service => service.serviceName.toLowerCase().includes(filter.toLocaleLowerCase())));
+        }
+    }, [allServicesData, filter]);
 
     const addServiceMuation = useMutation(addServiceApi, {
         onSuccess: () => {
@@ -138,6 +148,17 @@ const DashboardServices = () => {
         handleCloseEditDetails(serviceDetails, setServiceDetails, setModalStatus, setModalType, setFormSubmitStatus);
     };
 
+    if (allServicesLoading) {
+        return (
+            <Loader />
+        )
+    }
+    if (allServicesIsError) {
+        return (
+            <Error />
+        )
+    }
+
     return (
         <section className='mt-10' id='CustomerVehicle'>
             <div className='flex justify-between items-center'>
@@ -146,7 +167,10 @@ const DashboardServices = () => {
                 </div>
                 {(auth?.role === "Manager") && <button className='px-4 py-2 bg-accent cursor-pointer text-white font-bold rounded-md hover:opacity-75' onClick={() => handleAdd(setModalStatus, setModalType)}><FontAwesomeIcon icon={faPlus} />  Add&nbsp;Services</button>}
             </div>
-            <div className="mt-13 grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(320px,1fr))] xl:grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-8 ">
+            <div className='mt-6'>
+                <input type="text" onChange={(e) => setFilter(e.target.value)} value={filter} className='px-4 py-2 rounded-lg border border-dim w-[200px]' placeholder='Search by Name' />
+            </div>
+            <div className="mt-13 grid grid-cols-[repeat(auto-fit,minmax(280px,305px))] gap-8 ">
                 {
                     allServices?.length > 0 ?
                         allServices?.map(service => {

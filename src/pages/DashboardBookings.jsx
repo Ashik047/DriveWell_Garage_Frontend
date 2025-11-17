@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 // import { bookingData } from '../constants/BookingData'
 import BookingDetail from '../components/BookingDetail'
 import { useState } from 'react'
@@ -11,6 +11,8 @@ import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
+import Loader from "../components/Loader"
+import Error from "../components/Error"
 
 const DashBookings = () => {
 
@@ -19,13 +21,32 @@ const DashBookings = () => {
 
     const axiosWithToken = useAxiosWithToken();
 
-    const { data: bookingData, isLoading: bookingDataLoading, isError: bookingDataIsError, error: bookingDataError } = useQuery({
+    const { data: bookings, isLoading: bookingDataLoading, isError: bookingDataIsError, error: bookingDataError } = useQuery({
         queryKey: ['Booking'],
         queryFn: () => getBookingApi({ axiosWithToken }),
         select: response => response?.data?.sort((a, b) => (a.date - b.date)),
         enabled: !!auth?.accessToken
     }
     );
+
+    const [bookingData, setBookingData] = useState([]);
+    const [filter, setFilter] = useState("");
+    useEffect(() => {
+        if (bookings?.length > 0) {
+            setBookingData(bookings?.filter(booking => booking?.service.toLowerCase().includes(filter.toLocaleLowerCase())));
+        }
+    }, [bookings, filter]);
+
+    if (bookingDataLoading) {
+        return (
+            <Loader />
+        )
+    }
+    if (bookingDataIsError) {
+        return (
+            <Error />
+        )
+    }
 
     return (
         <section className='mt-10'>
@@ -44,7 +65,9 @@ const DashBookings = () => {
                     </select>
                 </FormControl>
             </div>
-
+            <div className='mt-6'>
+                <input type="text" onChange={(e) => setFilter(e.target.value)} value={filter} className='px-4 py-2 rounded-lg border border-dim w-[200px]' placeholder='Search by Service' />
+            </div>
             <div className='flex flex-col gap-8 mt-8'>
                 {
                     bookingData?.filter(booking => booking.status === activeStatus)?.length > 0 ?

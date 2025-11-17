@@ -20,6 +20,8 @@ import { toast, ToastContainer } from 'react-toastify'
 import { addFeedbackApi, deleteFeedbackApi, editFeedbackApi, editFeedbackStatusApi, getFeedbacksApi } from '../api/feedbackApi'
 import { useContext } from 'react'
 import AuthContext from '../context/AuthProvider'
+import Loader from "../components/Loader"
+import Error from "../components/Error"
 
 const DashReviews = () => {
     const [modalStatus, setModalStatus] = useState(false);
@@ -134,6 +136,17 @@ const DashReviews = () => {
         setFeedbackId("");
         handleCloseEditDetails(feedbackDetails, setFeedbackDetails, setModalStatus, setModalType, setFormSubmitStatus);
     };
+
+    if (allServicesLoading || allBranchesLoading || allFeedbacksLoading) {
+        return (
+            <Loader />
+        )
+    }
+    if (allServicesIsError || allBranchesIsError || allFeedbacksIsError) {
+        return (
+            <Error />
+        )
+    }
 
 
     return (

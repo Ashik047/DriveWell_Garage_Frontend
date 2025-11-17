@@ -7,6 +7,8 @@ import { BarChart, Legend, XAxis, YAxis, CartesianGrid, Tooltip, Bar, Responsive
 import AuthContext from '../context/AuthProvider';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import Loader from "../components/Loader"
+import Error from "../components/Error"
 
 const getBookingCount = (bookings) => {
     return useMemo(() => {
@@ -16,7 +18,7 @@ const getBookingCount = (bookings) => {
         const currentMonth = currentDate.getMonth();
         const currentYear = currentDate.getFullYear();
 
-        // Get the previous 4 months (excluding current)
+        // Get the previous 5 months (including current)
         const months = [];
         for (let i = 4; i >= 0; i--) {
             const date = new Date(currentYear, currentMonth - i, 1);
@@ -67,9 +69,21 @@ const DashboardHome = () => {
         queryKey: ["Data"],
         queryFn: () => getDataApi({ axiosWithToken })
     });
-    console.log(data);
 
     const bookingCountDetails = getBookingCount(data?.data?.bookings);
+    console.log(data?.data?.bookings);
+
+
+    if (isLoading) {
+        return (
+            <Loader />
+        )
+    }
+    if (isError) {
+        return (
+            <Error />
+        )
+    }
 
     return (
         <main>
@@ -105,7 +119,7 @@ const DashboardHome = () => {
                     <p className='mt-4 text-dim-black text-2xl'>Total Branches</p>
                 </div>
             </section>
-            <section className='w-full sm:w-[80%] lg:w-[50%] aspect-3/2 mx-auto mt-30'>
+            <section className='w-full sm:w-[80%] lg:w-[50%] aspect-[3/2] mx-auto mt-30'>
                 <h2 className='text-center text-4xl font-semibold mb-20'>Booking Overview (Last 5 Months)</h2>
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart responsive data={bookingCountDetails}>

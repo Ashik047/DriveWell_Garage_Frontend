@@ -4,7 +4,7 @@ import React from 'react'
 const Service = React.memo(({ service, handleEditService, handleServicesDelete, deletePending, role }) => {
 
     return (
-        <div className="shadow-[5px_5px_10px_1px_#cdcdcd] p-4 max-w-[3200px] mx-auto">
+        <div className="shadow-[5px_5px_10px_1px_#cdcdcd] p-4 max-w-[305px] mx-auto">
             <img src={service?.image?.url} alt={service?.serviceName} className="w-full aspect-3/2 object-cover object-center" />
             <h3 className="font-bold text-xl mt-4">{service?.serviceName}</h3>
             <p className="text-dim-black text-sm mt-2">{service?.description}</p>
