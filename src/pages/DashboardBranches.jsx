@@ -178,7 +178,7 @@ const DashboardBranches = () => {
 
             {/* modal*/}
             {(modalStatus) && <>
-                <ModalBackground zIndex={10} />
+                <ModalBackground zIndex={11} />
                 <div className="fixed bg-white top-[50%] left-[50%] transform -translate-[50%] z-11 px-6 py-10 text-left sm:w-[500px] xs:w-[400px] w-[300px] rounded-lg shadow-[5px_5px_10px_1px_gray]">
                     <div className="flex items-center justify-between">
                         <h5 className='font-bold text-2xl'>{modalType} Branch</h5>

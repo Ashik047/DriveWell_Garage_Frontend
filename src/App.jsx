@@ -20,6 +20,7 @@ import PersistLogin from './pages/PersistLogin'
 import PaymentSuccess from './pages/PaymentSuccess'
 import PaymentError from './pages/PaymentError'
 import DashboardHome from './pages/DashboardHome'
+import Invoice from './pages/Invoice'
 
 function App() {
 
@@ -37,6 +38,7 @@ function App() {
                 </Route>
                 <Route element={<PersistLogin />}>
                     <Route path='/booking' element={<Bookings />} />
+                    <Route path='/invoice/:id' element={<Invoice />} />
                     {/* <Route path="/customer-dashboard" element={<DashboardLayout role={"Customer"} />}>
             <Route index element={<Navigate to="bookings" replace />} />
             <Route path='bookings' element={<DashboardBookings role={"Customer"} />} />

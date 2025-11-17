@@ -2,6 +2,10 @@ export const getBookingApi = async ({ axiosWithToken }) => {
     return await axiosWithToken.get('/booking');
 };
 
+export const getInvoiceApi = async ({ axiosWithToken, id }) => {
+    return await axiosWithToken.get(`/booking/${id}/invoice`);
+};
+
 export const addBookingApi = async ({ axiosWithToken, reqBody }) => {
     return await axiosWithToken.post("/booking", reqBody);
 };
@@ -24,4 +28,12 @@ export const addBookingNotesApi = async ({ axiosWithToken, reqBody, id }) => {
 
 export const deleteBookingNoteApi = async ({ axiosWithToken, id, noteId }) => {
     return await axiosWithToken.patch(`/booking/${id}/notes/${noteId}`);
+};
+
+export const updateBillPaymentStatusApi = async ({ axiosWithToken, id }) => {
+    return await axiosWithToken.patch(`/booking/${id}/payment`);
+};
+
+export const payBillApi = async ({ axiosWithToken, reqBody, id }) => {
+    return await axiosWithToken.patch(`/booking/${id}/pay-bill`, reqBody);
 };

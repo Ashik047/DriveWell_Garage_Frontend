@@ -27,6 +27,7 @@
     "axios": "^1.12.2",
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.2",
+    "html2pdf.js": "^0.12.1",
     "i": "^0.3.7",
     "lucide-react": "^0.544.0",
     "npm": "^11.6.2",
@@ -36,10 +37,12 @@
     "react-loading-indicators": "^1.0.1",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.9.1",
+    "react-to-print": "^3.2.0",
     "react-toastify": "^11.0.5",
     "recharts": "^3.4.1",
     "styled-components": "^6.1.19",
-    "tailwindcss": "^4.1.13"
+    "tailwindcss": "^4.1.13",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
